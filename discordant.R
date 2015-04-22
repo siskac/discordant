@@ -168,3 +168,4 @@ makeTable <- function(discordPPMatrix, multOmics, featureNames1, featureNames2) 
 	return(list(outMatrix = outMatrix))
 }
 
+print("*")
