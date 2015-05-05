@@ -122,19 +122,19 @@ outMatrix	Matrix of posterior probabilities for all possible pairs.
 
 EXAMPLE RUN
 
-> library(MASS)
+library(MASS)
 # for single -omics
 
-> data1 <- mvrnorm(20,rep(0,20),diag(20))
-> data2 <- mvrnorm(20,rep(0,20),diag(20))
-> vectors <- createVectors(data1, data2, multOmics = FALSE)
-> result <- discordRun(vectors$v1, vectors$v2, multOmics = FALSE, 20)
-> resultsTable <- makeTable(result$discordPPMatrix, featureNames)
+data1 <- mvrnorm(20,rep(0,20),diag(20))
+data2 <- mvrnorm(20,rep(0,20),diag(20))
+vectors <- createVectors(data1, data2, multOmics = FALSE)
+result <- discordRun(vectors$v1, vectors$v2, multOmics = FALSE, 20)
+resultsTable <- makeTable(result$discordPPMatrix, featureNames)
 
 # for multiple –omics
 
-> data1 <- mvrnorm(20,rep(0,20),diag(20))
-> data2 <- mvrnorm(20,rep(0,20),diag(20))
-> vectors <- createVectors(data1, data2, multOmics = TRUE, featureSize = 10)
-> result <- discordRun(vectors$v1, vectors$v2, multOmics = TRUE, 10)
-> resultsTable <- makeTable(result$discordPPMatrix, featureNames1, featureNames2)
+data1 <- mvrnorm(20,rep(0,20),diag(20))
+data2 <- mvrnorm(20,rep(0,20),diag(20))
+vectors <- createVectors(data1, data2, multOmics = TRUE, featureSize = 10)
+result <- discordRun(vectors$v1, vectors$v2, multOmics = TRUE, 10)
+resultsTable <- makeTable(result$discordPPMatrix, featureNames1, featureNames2)
