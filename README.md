@@ -1,4 +1,4 @@
-### discordant
+# discordant
 
 ##Introduction
 
@@ -46,7 +46,7 @@ Now all functions should be loaded into R for use.
 
 ##Discordant Functions
 
-#fisherTrans
+###fisherTrans
 
 Purpose: Transforms Pearson’s correlation coefficients into z scores using Fisher’s method.
 
@@ -58,7 +58,7 @@ Value                       | Description
 ----------------------------|------------
 z		            | Integer or numeric list of transformed z scores
 
-#createVectors
+###createVectors
 
 Purpose: Creates vectors of correlation coefficients based on two groups of –omics bivariate data.
 
@@ -74,7 +74,7 @@ Value                       | Description
 v1                          | List of correlation coefficients for group 1
 v2                          | List of correlation coefficients for group 2
 
-#discordantRun
+###discordantRun
 
 Purpose: Runs discordant algorithm on two vectors of correlation coefficients.
 
@@ -94,7 +94,7 @@ probMatrix                  | Matrix of posterior probabilities where rows are e
 Convergence                 | Number of iterations for method to converge
 loglik                      | Final log likelihood
 
-#makeTable
+###makeTable
 
 Purpose: Creates a table that where the first two columns are feature pairs and the third column is the posterior probability of discordance.
 
