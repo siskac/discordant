@@ -1,6 +1,6 @@
-# discordant
+### discordant
 
-INTRODUCTION
+##Introduction
 
 Discordant is a package for the analysis of molecular feature pairs derived from –omics data
 to determine if they coexpress differently between phenotypic groups. Discordant uses a 
@@ -17,9 +17,7 @@ determine differentially coexpressed pairs. The final output is a table of molec
 pairs and their respective posterior probabilities. Functions have been written to allow 
 flexibility for users in how they interpret results, which will be discussed further.
 
-~*~
-
-REQUIRED INPUTS
+##Required Inputs
 
 All analyses require the following inputs:
 
@@ -41,9 +39,7 @@ number of features in first –omics, and number of features in second –omics 
 featureNames1/featureNames2
 names of features in first –omics, and names of features in second –omics respectively in same order of m rows in dataset1 and dataset2.
 
-*~*
-
-LOAD DISCORDANT INTO R
+##Loading Discordant into R
 
 In R have working directory contain files discordant.R and discordant.c. Then load discordant
 R code into R.
@@ -52,12 +48,9 @@ source("discordant.R")
 
 Now all functions should be loaded into R for use.
 
-*~*
+##Discordant Functions
 
-DISCORDANT FUNCTIONS
-
-
-fisherTrans
+#fisherTrans
 
 Purpose: Transforms Pearson’s correlation coefficients into z scores using Fisher’s method.
 
@@ -67,8 +60,7 @@ rho		integer or numeric list of Pearson's correlation coefficients
 Value:
 z		integer or numeric list of transformed z scores
 
-
-createVectors
+#createVectors
 
 Purpose: Creates vectors of correlation coefficients based on two groups of –omics bivariate data.
 
@@ -83,8 +75,7 @@ Value:
 v1		List of correlation coefficients for group 1
 v2		List of correlation coefficients for group 2
 
-
-discordantRun
+#discordantRun
 
 Purpose: Runs discordant algorithm on two vectors of correlation coefficients.
 
@@ -104,8 +95,7 @@ probMatrix	Matrix of posterior probabilities where rows are each molecular featu
 Convergence	Number of iterations for method to converge
 loglik		Final log likelihood
 
-
-makeTable
+#makeTable
 
 Purpose: Creates a table that where the first two columns are feature pairs and the third column is the posterior probability of discordance.
 
@@ -118,11 +108,11 @@ featuresNames2	List of feature names for second –omics analyzed (multiple –o
 Value:
 outMatrix	Matrix of posterior probabilities for all possible pairs.
 
-*~*
+##Example Run
 
-EXAMPLE RUN
-
+```
 library(MASS)
+
 # for single -omics
 
 data1 <- mvrnorm(20,rep(0,20),diag(20))
@@ -138,3 +128,4 @@ data2 <- mvrnorm(20,rep(0,20),diag(20))
 vectors <- createVectors(data1, data2, multOmics = TRUE, featureSize = 10)
 result <- discordRun(vectors$v1, vectors$v2, multOmics = TRUE, 10)
 resultsTable <- makeTable(result$discordPPMatrix, featureNames1, featureNames2)
+```
