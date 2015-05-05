@@ -19,14 +19,16 @@ flexibility for users in how they interpret results, which will be discussed fur
 
 ##Required Inputs
 
-All analyses require the following inputs:
+Required Inputs:
 
-data1/data2
-An m by n matrix of expression/abundance values, where m is number of features and n is 
-number of samples. Values should already be pre-processed and normalized respective to the 
-type of –omics. Dataset should be separated by group, where data1 contains data for group 1 
-and data2 contains data for group2. If running dual –omics, -omics datasets should be stacked
-on top of each other.
+Input                     | Description
+--------------------------|------------
+data1/data2               | An m by n matrix of expression/abundance values, where m is number of features and n is 
+                          | number of samples. Values should already be pre-processed and normalized respective to the 
+                          | type of –omics. Dataset should be separated by group, where data1 contains data for group 1 
+                          | and data2 contains data for group2. If running dual –omics, -omics datasets should be stacked
+                          | on top of each other.
+featureNames              | List of feature names in same order of m rows.
 
 featureNames
 List of feature names in same order of m rows.
