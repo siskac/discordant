@@ -69,7 +69,7 @@ createVectors <- function(data1, data2, multOmics, featureSize) {
 	statMatrix1 <- cor(t(data1))
 	statMatrix2 <- cor(t(data2))
 	if(multOmics == TRUE) {
-		if(length(featureSize) > 0) {
+		if(length(featureSize) == 0) {
 			stop("Need an input for feature size.")
 		}
 		statMatrix1 <- statMatrix1[1:featureSize,(featureSize + 1):(featureSize + dim(data1)[1])]
