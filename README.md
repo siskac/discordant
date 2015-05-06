@@ -2,20 +2,31 @@
 
 ##Introduction
 
-Discordant is a package for the analysis of molecular feature pairs derived from –omics data
-to determine if they coexpress differently between phenotypic groups. Discordant uses a 
-mixture model that “bins” pairs based on their type of coexpression. More information on 
-the algorithm can be found in Siska, et. al (submitted). Final output is summed up posterior
-probabilities of differential coexpression bins. This package can be used to determine 
-differential coexpression within one –omics dataset or between two –omics datasets (provided
-that both –omics datasets were taken from the same samples). Also, the type of data can be 
-any type of –omics, such as metabolomics, transcriptomic, proteomic, etc. as long as the data
+Discordant is a package for the analysis of molecular feature pairs derived from –omics data to determine if they coexpress differently between phenotypic groups. Discordant uses a mixture model that “bins” pairs based on their type of coexpression. More information on the algorithm can be found in Siska, et. al (submitted). Final output is summed up posterior
+probabilities of differential coexpression bins. This package can be used to determine differential coexpression within one –omics dataset or between two –omics datasets (provided that both –omics datasets were taken from the same samples). Also, the type of data can be any type of –omics, such as metabolomics, transcriptomic, proteomic, etc. as long as the data
 is continuous (numerical) rather than discrete (categorical, count).
 
-The functions in the Discordant package provide a simple pipeline for moderate R users to 
-determine differentially coexpressed pairs. The final output is a table of molecular feature
-pairs and their respective posterior probabilities. Functions have been written to allow 
-flexibility for users in how they interpret results, which will be discussed further.
+The functions in the Discordant package provide a simple pipeline for moderate R users to determine differentially coexpressed pairs. The final output is a table of molecular feature pairs and their respective posterior probabilities. Functions have been written to allow flexibility for users in how they interpret results, which will be discussed further.
+
+The Discordant method uses C code, which has been shown to compile in Unix and Linux.
+
+##Loading Discordant into R
+
+Open directory that contains files discordant.R and discordant.C. First compile C code for R. Open a terminal window and run the following line.
+
+```
+R CMD SHLIB discordant.c
+```
+
+This will create another file, discordant.so.
+
+Next, open R in the same directory. To load the Discordant method, enter the following line of code.
+
+```
+source("discordant.R")
+```
+
+Now all functions should be loaded into R for use.
 
 ##Required Inputs
 
@@ -32,17 +43,6 @@ Input                       | Description
 ----------------------------|------------
 featureSize1/featureSize2   | Number of features in first –omics, and number of features in second –omics respectively.
 featureNames1/featureNames2 | Names of features in first –omics, and names of features in second –omics respectively in same order of m rows in dataset1 and dataset2.
-
-##Loading Discordant into R
-
-In R have working directory contain files discordant.R and discordant.c. Then load discordant
-R code into R.
-
-```
-source("discordant.R")
-```
-
-Now all functions should be loaded into R for use.
 
 ##Discordant Functions
 
