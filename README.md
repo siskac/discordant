@@ -8,7 +8,7 @@ is continuous (numerical) rather than discrete (categorical, count).
 
 The functions in the Discordant package provide a simple pipeline for moderate R users to determine differentially coexpressed pairs. The final output is a table of molecular feature pairs and their respective posterior probabilities. Functions have been written to allow flexibility for users in how they interpret results, which will be discussed further.
 
-The Discordant method uses C code, which has been shown to compile in Unix and Linux.
+The Discordant method uses C code, which has been shown to compile on Linux. The C code is not able to compile on OSX Yosemite, however testing has not expanded to other operating systems.
 
 ##Loading Discordant into R
 
