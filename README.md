@@ -50,6 +50,7 @@ featureNames1/featureNames2 | Names of features in first –omics, and names of 
 
 Purpose: Transforms Pearson’s correlation coefficients into z scores using Fisher’s method.
 
+---------------------------------------------
 #Argument        | Description
 rho		            | Integer or numeric list of Pearson's correlation coefficients
 #Value           | Description
