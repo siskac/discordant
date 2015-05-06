@@ -80,7 +80,7 @@ createVectors <- function(data1, data2, multOmics, featureSize) {
 	statVector2 <- as.vector(statMatrix2)
 	
 	if(multOmics == FALSE) {
-		diagMatrix <- lower.tri(statMatrix1, diag = FALSE)`
+		diagMatrix <- lower.tri(statMatrix1, diag = FALSE)
 		diagVector <- as.vector(diagMatrix)
 		indexVector <- which(diagVector == TRUE)
 		statVector1 <- statVector1[indexVector]
