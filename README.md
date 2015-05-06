@@ -88,7 +88,6 @@ featureSize                 | Integer of feature size length of first -omics in 
 Value                       | Description
 ----------------------------|------------
 discordPPMatrix             | Matrix of posterior probabilities where rows and columns reflect features
-discordPPV                  | Vector of posterior probabilities
 class                       | Vector of classes
 probMatrix                  | Matrix of posterior probabilities where rows are each molecular feature pair and columns are nine different classes
 Convergence                 | Number of iterations for method to converge
@@ -110,6 +109,8 @@ outMatrix                   | Matrix of posterior probabilities for all possible
 
 ##Example Run
 
+Simulations
+
 ```
 library(MASS)
 
@@ -117,15 +118,48 @@ library(MASS)
 
 data1 <- mvrnorm(20,rep(0,20),diag(20))
 data2 <- mvrnorm(20,rep(0,20),diag(20))
+featureNames <- 1:20
+
 vectors <- createVectors(data1, data2, multOmics = FALSE)
-result <- discordRun(vectors$v1, vectors$v2, multOmics = FALSE, 20)
-resultsTable <- makeTable(result$discordPPMatrix, featureNames)
+result <- discordantRun(vectors$v1, vectors$v2, multOmics = FALSE, transform = TRUE, 20)
+resultsTable <- makeTable(result$discordPPMatrix, multOmics = FALSE, featureNames)
 
 # for multiple –omics
 
 data1 <- mvrnorm(20,rep(0,20),diag(20))
 data2 <- mvrnorm(20,rep(0,20),diag(20))
+featureNames1 <- 1:10
+featureNames2 <- 11:20
+
 vectors <- createVectors(data1, data2, multOmics = TRUE, featureSize = 10)
-result <- discordRun(vectors$v1, vectors$v2, multOmics = TRUE, 10)
-resultsTable <- makeTable(result$discordPPMatrix, featureNames1, featureNames2)
+result <- discordantRun(vectors$v1, vectors$v2, multOmics = TRUE, transform = TRUE, 10)
+resultsTable <- makeTable(result$discordPPMatrix, multOmics = TRUE, featureNames1, featureNames2)
 ```
+
+Real Data
+
+```
+load("TCGA_GBM_miRNASample.RData") # loads matrix called miRNASampleMatrix
+load("TCGA_GBM_transcriptSample.RData") # loads matrix called transSampleMatrix
+print(colnames(transSampleMatrix)) # look at groups
+group1 <- 1:10
+group2 <- 11:20
+
+# DC analysis on only transcripts pairs
+
+featureNames <- rownames(transSampleMatrix)
+
+vectors <- createVectors(transSampleMatrix[,group1], transSampleMatrix[,group2], multOmics = FALSE)
+result <- discordantRun(vectors$v1, vectors$v2, multOmics = FALSE, transform = TRUE, 20)
+resultsTable <- makeTable(result$discordPPMatrix, multOmics = FALSE, featureNames)
+
+
+# DC analysis on miRNA-transcript pairs
+
+featureNames1 <- rownames(microSampleMatrix)
+featureNames2 <- rownames(transSampleMatrix)
+data <- rbind(microSampleMatrix, transSampleMatrix)
+
+vectors <- createVectors(data[,group1], data[,group2], multOmics = TRUE, featureSize = dim(microSampleMatrix)[1])
+result <- discordantRun(vectors$v1, vectors$v2, multOmics = TRUE, transform = TRUE, dim(microSampleMatrix)[1])
+resultsTable <- makeTable(result$discordPPMatrix, multOmics = TRUE, featureNames1, featureNames2)
