@@ -54,6 +54,7 @@ Purpose: Transforms Pearson’s correlation coefficients into z scores using Fis
 Argument        | Description
 ----------------|---------------------
 rho             | Integer or numeric list of Pearson's correlation coefficients
+
 Value           | Description
 ----------------|-------------------
 z       | Integer or numeric list of transformed z scores
