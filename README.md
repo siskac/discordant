@@ -50,17 +50,18 @@ featureNames1/featureNames2 | Names of features in first –omics, and names of 
 
 Purpose: Transforms Pearson’s correlation coefficients into z scores using Fisher’s method.
 
----------------------------------------------
-#Argument        | Description
+
+Argument        | Description
+----------------|---------------------
 rho		            | Integer or numeric list of Pearson's correlation coefficients
-#Value           | Description
+Value           | Description
 z		            | Integer or numeric list of transformed z scores
 
 ###createVectors
 
 Purpose: Creates vectors of correlation coefficients based on two groups of –omics bivariate data.
 
-Arguments                   | Description
+                  | Description
 ----------------------------|------------
 data1                       | 1st group of bivariate normal data
 data2                       | 2nd group of bivariate normal data
