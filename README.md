@@ -142,24 +142,24 @@ Real Data
 ```
 load("TCGA_GBM_miRNASample.RData") # loads matrix called miRNASampleMatrix
 load("TCGA_GBM_transcriptSample.RData") # loads matrix called transSampleMatrix
-print(colnames(transSampleMatrix)) # look at groups
+print(colnames(TCGA_GBM_transcriptSample)) # look at groups
 group1 <- 1:10
 group2 <- 11:20
 
 # DC analysis on only transcripts pairs
 
-featureNames <- rownames(transSampleMatrix)
+featureNames <- rownames(TCGA_GBM_transcriptSample)
 
-vectors <- createVectors(transSampleMatrix[,group1], transSampleMatrix[,group2], multOmics = FALSE)
+vectors <- createVectors(TCGA_GBM_transcriptSample[,group1], TCGA_GBM_transcriptSample[,group2], multOmics = FALSE)
 result <- discordantRun(vectors$v1, vectors$v2, multOmics = FALSE, transform = TRUE, 20)
 resultsTable <- makeTable(result$discordPPMatrix, multOmics = FALSE, featureNames)
 
 
 # DC analysis on miRNA-transcript pairs
 
-featureNames1 <- rownames(microSampleMatrix)
-featureNames2 <- rownames(transSampleMatrix)
-data <- rbind(microSampleMatrix, transSampleMatrix)
+featureNames1 <- rownames(TCGA_GBM_miRNASample)
+featureNames2 <- rownames(TCGA_GBM_transcriptSample)
+data <- rbind(TCGA_GBM_miRNASample, TCGA_GBM_transcriptSample) # stack data matrices on top of each other
 
 vectors <- createVectors(data[,group1], data[,group2], multOmics = TRUE, featureSize = dim(microSampleMatrix)[1])
 result <- discordantRun(vectors$v1, vectors$v2, multOmics = TRUE, transform = TRUE, dim(microSampleMatrix)[1])
