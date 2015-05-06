@@ -69,18 +69,18 @@ createVectors <- function(data1, data2, multOmics, featureSize) {
 	statMatrix1 <- cor(t(data1))
 	statMatrix2 <- cor(t(data2))
 	if(multOmics == TRUE) {
-		if(length(featureSize) > 0) {
+		if(length(featureSize) == 0) {
 			stop("Need an input for feature size.")
 		}
-		statMatrix1 <- statMatrix1[1:featureSize,(featureSize + 1):(featureSize + dim(data1)[1])]
-		statMatrix2 <- statMatrix2[1:featureSize,(featureSize + 1):(featureSize + dim(data1)[1])]
+		statMatrix1 <- statMatrix1[1:featureSize,(featureSize + 1):dim(data1)[1]]
+		statMatrix2 <- statMatrix2[1:featureSize,(featureSize + 1):dim(data1)[1]]
 	}
 
 	statVector1 <- as.vector(statMatrix1)
 	statVector2 <- as.vector(statMatrix2)
 	
 	if(multOmics == FALSE) {
-		diagMatrix <- lower.tri(statMatrix1, diag = FALSE)`
+		diagMatrix <- lower.tri(statMatrix1, diag = FALSE)
 		diagVector <- as.vector(diagMatrix)
 		indexVector <- which(diagVector == TRUE)
 		statVector1 <- statVector1[indexVector]
@@ -145,16 +145,20 @@ discordantRun <- function(v1, v2, multOmics, transform, featureSize) {
 		discordPPMatrix <- matrix(diagVector, nrow = featureSize, byrow = FALSE)
 	}
 	
-	return(list(discordPPMatrix = discordPPMatrix, discordPPV = discordPPV, class = pd$class, probMatrix = pd$z, convergence = pd$convergence, loglik = pd$loglik))
+	return(list(discordPPMatrix = discordPPMatrix, class = pd$class, probMatrix = pd$z, convergence = pd$convergence, loglik = pd$loglik))
 }
 
-makeTable <- function(discordPPMatrix, multOmics, featureNames1, featureNames2) {
+makeTable <- function(discordPPMatrix, multOmics, featureNames1, featureNames2 = NA) {
 
 	if(length(featureNames1) != dim(discordPPMatrix)[1] || multOmics == TRUE && length(featureNames2) != dim(discordPPMatrix)[2] || multOmics == FALSE && length(featureNames1) != dim(discordPPMatrix)[2]) {
 		stop("length of feature names does not meet dimension size")
 	}
 	
-	outMatrix <- NULL
+	if(multOmics == FALSE) {
+		featureNames2 = featureNames1
+	}
+
+	outMatrix = NULL
 	
 	for(i in 1:dim(discordPPMatrix)[1]) {
 		for(j in 1:dim(discordPPMatrix)[2]) {
@@ -165,7 +169,7 @@ makeTable <- function(discordPPMatrix, multOmics, featureNames1, featureNames2) 
 		}
 	}
 	
-	return(list(outMatrix = outMatrix))
+				
+	
+	return(outMatrix)
 }
-
-print("*")
