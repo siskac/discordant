@@ -2,11 +2,10 @@
 
 ##Introduction
 
-Discordant is a package for the analysis of molecular feature pairs derived from –omics data to determine if they coexpress differently between phenotypic groups. Discordant uses a mixture model that “bins” pairs based on their type of coexpression. More information on the algorithm can be found in Siska, et. al (submitted). Final output is summed up posterior
-probabilities of differential coexpression bins. This package can be used to determine differential coexpression within one –omics dataset or between two –omics datasets (provided that both –omics datasets were taken from the same samples). Also, the type of data can be any type of –omics, such as metabolomics, transcriptomic, proteomic, etc. as long as the data
+Discordant is a package for the analysis of molecular feature pairs derived from –omics data to determine if they correlate differently between phenotypic groups. Discordant uses a mixture model that “bins” molecular feature pairs based on their type of coexpression. More information on the algorithm can be found in Siska, et. al (submitted). Final output is summed up posterior probabilities of differential correlation bins. This package can be used to determine differential correlation within one –omics dataset or between two –omics datasets (provided that both –omics datasets were taken from the same samples). Also, the type of data can be any type of –omics, such as metabolomics, transcriptomic, proteomics, etc. as long as the data
 is continuous (numerical) rather than discrete (categorical, count).
 
-The functions in the Discordant package provide a simple pipeline for moderate R users to determine differentially coexpressed pairs. The final output is a table of molecular feature pairs and their respective posterior probabilities. Functions have been written to allow flexibility for users in how they interpret results, which will be discussed further.
+The functions in the Discordant package provide a simple pipeline for moderate R users to determine differentially correlated pairs. The final output is a table of molecular feature pairs and their respective posterior probabilities. Functions have been written to allow flexibility for users in how they interpret results, which will be discussed further.
 
 The Discordant method uses C code, which has been shown to compile on Linux. The C code is not able to compile on OSX Yosemite, however testing has not expanded to other operating systems.
 
@@ -140,8 +139,8 @@ resultsTable <- makeTable(result$discordPPMatrix, multOmics = TRUE, featureNames
 Real Data
 
 ```
-load("TCGA_GBM_miRNASample.RData") # loads matrix called miRNASampleMatrix
-load("TCGA_GBM_transcriptSample.RData") # loads matrix called transSampleMatrix
+load("TCGA_GBM_miRNASample.RData") # loads matrix called TCGA_GBM_miRNASample
+load("TCGA_GBM_transcriptSample.RData") # loads matrix called TCGA_GBM_transcriptSample
 print(colnames(TCGA_GBM_transcriptSample)) # look at groups
 group1 <- 1:10
 group2 <- 11:20
