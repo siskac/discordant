@@ -109,34 +109,7 @@ outMatrix                   | Matrix of posterior probabilities for all possible
 
 ##Example Run
 
-Simulations
-
-```
-library(MASS)
-
-# for single -omics
-
-data1 <- mvrnorm(20,rep(0,20),diag(20))
-data2 <- mvrnorm(20,rep(0,20),diag(20))
-featureNames <- 1:20
-
-vectors <- createVectors(data1, data2, multOmics = FALSE)
-result <- discordantRun(vectors$v1, vectors$v2, multOmics = FALSE, transform = TRUE, 20)
-resultsTable <- makeTable(result$discordPPMatrix, multOmics = FALSE, featureNames)
-
-# for multiple –omics
-
-data1 <- mvrnorm(20,rep(0,20),diag(20))
-data2 <- mvrnorm(20,rep(0,20),diag(20))
-featureNames1 <- 1:10
-featureNames2 <- 11:20
-
-vectors <- createVectors(data1, data2, multOmics = TRUE, featureSize = 10)
-result <- discordantRun(vectors$v1, vectors$v2, multOmics = TRUE, transform = TRUE, 10)
-resultsTable <- makeTable(result$discordPPMatrix, multOmics = TRUE, featureNames1, featureNames2)
-```
-
-Real Data
+.RData files are available on the github repository.
 
 ```
 load("TCGA_GBM_miRNASample.RData") # loads matrix called TCGA_GBM_miRNASample
@@ -150,8 +123,8 @@ group2 <- 11:20
 featureNames <- rownames(TCGA_GBM_transcriptSample)
 
 vectors <- createVectors(TCGA_GBM_transcriptSample[,group1], TCGA_GBM_transcriptSample[,group2])
-result <- discordantRun(vectors$v1, vectors$v2, 20)
-resultsTable <- makeTable(result$discordPPMatrix, featureNames)
+result <- discordantRun(vectors$v1, vectors$v2, featureSize = 20)
+resultsTable <- makeTable(result$discordPPMatrix, featureNames = featureNames)
 
 
 # DC analysis on miRNA-transcript pairs
@@ -162,4 +135,4 @@ data <- rbind(TCGA_GBM_miRNASample, TCGA_GBM_transcriptSample) # stack data matr
 
 vectors <- createVectors(data[,group1], data[,group2], multOmics = TRUE, featureSize = dim(microSampleMatrix)[1])
 result <- discordantRun(vectors$v1, vectors$v2, multOmics = TRUE, transform = TRUE, dim(microSampleMatrix)[1])
-resultsTable <- makeTable(result$discordPPMatrix, multOmics = TRUE, featureNames1, featureNames2)
+resultsTable <- makeTable(result$discordPPMatrix, multOmics = TRUE, featureNames1 = featureNames1, featureNames2 = featureNames2)
