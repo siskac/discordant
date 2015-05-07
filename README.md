@@ -149,9 +149,9 @@ group2 <- 11:20
 
 featureNames <- rownames(TCGA_GBM_transcriptSample)
 
-vectors <- createVectors(TCGA_GBM_transcriptSample[,group1], TCGA_GBM_transcriptSample[,group2], multOmics = FALSE)
-result <- discordantRun(vectors$v1, vectors$v2, multOmics = FALSE, transform = TRUE, 20)
-resultsTable <- makeTable(result$discordPPMatrix, multOmics = FALSE, featureNames)
+vectors <- createVectors(TCGA_GBM_transcriptSample[,group1], TCGA_GBM_transcriptSample[,group2])
+result <- discordantRun(vectors$v1, vectors$v2, 20)
+resultsTable <- makeTable(result$discordPPMatrix, featureNames)
 
 
 # DC analysis on miRNA-transcript pairs
