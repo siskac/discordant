@@ -147,14 +147,18 @@ discordantRun <- function(v1, v2, multOmics = FALSE, transform = TRUE, featureSi
 	return(list(discordPPMatrix = discordPPMatrix, class = pd$class, probMatrix = pd$z, convergence = pd$convergence, loglik = pd$loglik))
 }
 
-makeTable <- function(discordPPMatrix, multOmics = FALSE, featureNames1, featureNames2 = NA) {
+makeTable <- function(discordPPMatrix, multOmics = FALSE, featureNames = NA, featureNames1 = NA, featureNames2 = NA) {
 
-	if(length(featureNames1) != dim(discordPPMatrix)[1] || multOmics == TRUE && length(featureNames2) != dim(discordPPMatrix)[2] || multOmics == FALSE && length(featureNames1) != dim(discordPPMatrix)[2]) {
-		stop("length of feature names does not meet dimension size")
+	if(multOmics == FALSE) {
+		featureNames1 = featureNames
+		featureNames2 = featureNames
+		if(length(featureNames) != dim(discordPPMatrix)[1]) {
+			stop("length of feature names does not meet dimension size")
+		}
 	}
 	
-	if(multOmics == FALSE) {
-		featureNames2 = featureNames1
+	if(multOmics == TRUE && length(featureNames2) != dim(discordPPMatrix)[2] && length(featureNames1) != dim(discordPPMatrix)[1]) {
+		stop("length of feature names does not meet dimension size")
 	}
 
 	outMatrix = NULL
@@ -167,8 +171,5 @@ makeTable <- function(discordPPMatrix, multOmics = FALSE, featureNames1, feature
 			}
 		}
 	}
-	
-				
-	
 	return(outMatrix)
 }
