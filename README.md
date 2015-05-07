@@ -41,7 +41,7 @@ Required inputs for Dual -Omics:
 Input                       | Description
 ----------------------------|------------
 featureSize1/featureSize2   | Number of features in first –omics, and number of features in second –omics respectively.
-featureNames1/featureNames2 | Names of features in first –omics, and names of features in second –omics respectively in same order of m rows in dataset1 and dataset2.
+featureNames1/featureNames2 | Names of features in first –omics, and names of features in second –omics respectively in same order of m rows in data1 and data2.
 
 ##Discordant Functions
 
