@@ -1,3 +1,13 @@
+# Applied from Lai et al 2007 Bioinformatics.
+
+# Code written by Yinglei Lai
+# C code and R functions unmap and em.normal.partial.concordant
+# E-mail: ylai@gwu.edu
+
+# Code written by Charlotte Siska
+# R functions fisherTrans, createVectors, discordantRun and makeTable
+# Email: charlotte.siska@ucdenver.edu
+
 dyn.load("discordant.so")
 
 #modified from package mclust
@@ -57,11 +67,7 @@ fishersTrans <- function(rho) {
 	return(z)
 }
 
-createVectors <- function(data1, data2, multOmics, featureSize) {
-	if(multOmics != TRUE && multOmics != FALSE) {
-		stop("multOmics is not a boolean value")
-	}
-	
+createVectors <- function(data1, data2, multOmics = FALSE, featureSize = NA) {
 	if(dim(data1)[1] != dim(data2)[1]) {
 		stop("Datasets do not have same feature size.")
 	}
@@ -69,7 +75,7 @@ createVectors <- function(data1, data2, multOmics, featureSize) {
 	statMatrix1 <- cor(t(data1))
 	statMatrix2 <- cor(t(data2))
 	if(multOmics == TRUE) {
-		if(length(featureSize) == 0) {
+		if(length(featureSize) > 1) {
 			stop("Need an input for feature size.")
 		}
 		statMatrix1 <- statMatrix1[1:featureSize,(featureSize + 1):dim(data1)[1]]
@@ -90,14 +96,7 @@ createVectors <- function(data1, data2, multOmics, featureSize) {
 	return(list(v1 = statVector1, v2 = statVector2))
 }
 
-discordantRun <- function(v1, v2, multOmics, transform, featureSize) {
-
-	if(multOmics != TRUE && multOmics != FALSE) {
-		stop("multOmics is not a boolean value")
-	}
-	if(transform != TRUE && transform != FALSE) {
-		stop("transform is not a boolean value.")
-	}
+discordantRun <- function(v1, v2, multOmics = FALSE, transform = TRUE, featureSize) {
 
 	if(transform == TRUE) {
 		if(range(v1)[1] < -1 || range(v1)[2] > 1 || range(v2)[1] < -1 || range(v2)[2] > 1) {
@@ -148,14 +147,18 @@ discordantRun <- function(v1, v2, multOmics, transform, featureSize) {
 	return(list(discordPPMatrix = discordPPMatrix, class = pd$class, probMatrix = pd$z, convergence = pd$convergence, loglik = pd$loglik))
 }
 
-makeTable <- function(discordPPMatrix, multOmics, featureNames1, featureNames2 = NA) {
+makeTable <- function(discordPPMatrix, multOmics = FALSE, featureNames = NA, featureNames1 = NA, featureNames2 = NA) {
 
-	if(length(featureNames1) != dim(discordPPMatrix)[1] || multOmics == TRUE && length(featureNames2) != dim(discordPPMatrix)[2] || multOmics == FALSE && length(featureNames1) != dim(discordPPMatrix)[2]) {
-		stop("length of feature names does not meet dimension size")
+	if(multOmics == FALSE) {
+		featureNames1 = featureNames
+		featureNames2 = featureNames
+		if(length(featureNames) != dim(discordPPMatrix)[1]) {
+			stop("length of feature names does not meet dimension size")
+		}
 	}
 	
-	if(multOmics == FALSE) {
-		featureNames2 = featureNames1
+	if(multOmics == TRUE && length(featureNames2) != dim(discordPPMatrix)[2] && length(featureNames1) != dim(discordPPMatrix)[1]) {
+		stop("length of feature names does not meet dimension size")
 	}
 
 	outMatrix = NULL
@@ -168,8 +171,5 @@ makeTable <- function(discordPPMatrix, multOmics, featureNames1, featureNames2 =
 			}
 		}
 	}
-	
-				
-	
 	return(outMatrix)
 }

@@ -2,11 +2,10 @@
 
 ##Introduction
 
-Discordant is a package for the analysis of molecular feature pairs derived from –omics data to determine if they coexpress differently between phenotypic groups. Discordant uses a mixture model that “bins” pairs based on their type of coexpression. More information on the algorithm can be found in Siska, et. al (submitted). Final output is summed up posterior
-probabilities of differential coexpression bins. This package can be used to determine differential coexpression within one –omics dataset or between two –omics datasets (provided that both –omics datasets were taken from the same samples). Also, the type of data can be any type of –omics, such as metabolomics, transcriptomic, proteomic, etc. as long as the data
+Discordant is a package for the analysis of molecular feature pairs derived from –omics data to determine if they correlate differently between phenotypic groups. Discordant uses a mixture model that “bins” molecular feature pairs based on their type of coexpression. More information on the algorithm can be found in Siska, et. al (submitted). Final output is summed up posterior probabilities of differential correlation bins. This package can be used to determine differential correlation within one –omics dataset or between two –omics datasets (provided that both –omics datasets were taken from the same samples). Also, the type of data can be any type of –omics, such as metabolomics, transcriptomic, proteomics, etc. as long as the data
 is continuous (numerical) rather than discrete (categorical, count).
 
-The functions in the Discordant package provide a simple pipeline for moderate R users to determine differentially coexpressed pairs. The final output is a table of molecular feature pairs and their respective posterior probabilities. Functions have been written to allow flexibility for users in how they interpret results, which will be discussed further.
+The functions in the Discordant package provide a simple pipeline for moderate R users to determine differentially correlated pairs. The final output is a table of molecular feature pairs and their respective posterior probabilities. Functions have been written to allow flexibility for users in how they interpret results, which will be discussed further.
 
 The Discordant method uses C code, which has been shown to compile on Linux. The C code is not able to compile on OSX Yosemite, however testing has not expanded to other operating systems.
 
@@ -42,7 +41,7 @@ Required inputs for Dual -Omics:
 Input                       | Description
 ----------------------------|------------
 featureSize1/featureSize2   | Number of features in first –omics, and number of features in second –omics respectively.
-featureNames1/featureNames2 | Names of features in first –omics, and names of features in second –omics respectively in same order of m rows in dataset1 and dataset2.
+featureNames1/featureNames2 | Names of features in first –omics, and names of features in second –omics respectively in same order of m rows in data1 and data2.
 
 ##Discordant Functions
 
@@ -110,57 +109,30 @@ outMatrix                   | Matrix of posterior probabilities for all possible
 
 ##Example Run
 
-Simulations
+.RData files are available on the github repository.
 
 ```
-library(MASS)
-
-# for single -omics
-
-data1 <- mvrnorm(20,rep(0,20),diag(20))
-data2 <- mvrnorm(20,rep(0,20),diag(20))
-featureNames <- 1:20
-
-vectors <- createVectors(data1, data2, multOmics = FALSE)
-result <- discordantRun(vectors$v1, vectors$v2, multOmics = FALSE, transform = TRUE, 20)
-resultsTable <- makeTable(result$discordPPMatrix, multOmics = FALSE, featureNames)
-
-# for multiple –omics
-
-data1 <- mvrnorm(20,rep(0,20),diag(20))
-data2 <- mvrnorm(20,rep(0,20),diag(20))
-featureNames1 <- 1:10
-featureNames2 <- 11:20
-
-vectors <- createVectors(data1, data2, multOmics = TRUE, featureSize = 10)
-result <- discordantRun(vectors$v1, vectors$v2, multOmics = TRUE, transform = TRUE, 10)
-resultsTable <- makeTable(result$discordPPMatrix, multOmics = TRUE, featureNames1, featureNames2)
-```
-
-Real Data
-
-```
-load("TCGA_GBM_miRNASample.RData") # loads matrix called miRNASampleMatrix
-load("TCGA_GBM_transcriptSample.RData") # loads matrix called transSampleMatrix
-print(colnames(transSampleMatrix)) # look at groups
+load("TCGA_GBM_miRNASample.RData") # loads matrix called TCGA_GBM_miRNASample
+load("TCGA_GBM_transcriptSample.RData") # loads matrix called TCGA_GBM_transcriptSample
+print(colnames(TCGA_GBM_transcriptSample)) # look at groups
 group1 <- 1:10
 group2 <- 11:20
 
 # DC analysis on only transcripts pairs
 
-featureNames <- rownames(transSampleMatrix)
+featureNames <- rownames(TCGA_GBM_transcriptSample)
 
-vectors <- createVectors(transSampleMatrix[,group1], transSampleMatrix[,group2], multOmics = FALSE)
-result <- discordantRun(vectors$v1, vectors$v2, multOmics = FALSE, transform = TRUE, 20)
-resultsTable <- makeTable(result$discordPPMatrix, multOmics = FALSE, featureNames)
+vectors <- createVectors(TCGA_GBM_transcriptSample[,group1], TCGA_GBM_transcriptSample[,group2])
+result <- discordantRun(vectors$v1, vectors$v2, featureSize = 20)
+resultsTable <- makeTable(result$discordPPMatrix, featureNames = featureNames)
 
 
 # DC analysis on miRNA-transcript pairs
 
-featureNames1 <- rownames(microSampleMatrix)
-featureNames2 <- rownames(transSampleMatrix)
-data <- rbind(microSampleMatrix, transSampleMatrix)
+featureNames1 <- rownames(TCGA_GBM_miRNASample)
+featureNames2 <- rownames(TCGA_GBM_transcriptSample)
+data <- rbind(TCGA_GBM_miRNASample, TCGA_GBM_transcriptSample) # stack data matrices on top of each other
 
 vectors <- createVectors(data[,group1], data[,group2], multOmics = TRUE, featureSize = dim(microSampleMatrix)[1])
 result <- discordantRun(vectors$v1, vectors$v2, multOmics = TRUE, transform = TRUE, dim(microSampleMatrix)[1])
-resultsTable <- makeTable(result$discordPPMatrix, multOmics = TRUE, featureNames1, featureNames2)
+resultsTable <- makeTable(result$discordPPMatrix, multOmics = TRUE, featureNames1 = featureNames1, featureNames2 = featureNames2)
