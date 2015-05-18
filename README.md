@@ -133,6 +133,6 @@ featureNames1 <- rownames(TCGA_GBM_miRNASample)
 featureNames2 <- rownames(TCGA_GBM_transcriptSample)
 data <- rbind(TCGA_GBM_miRNASample, TCGA_GBM_transcriptSample) # stack data matrices on top of each other
 
-vectors <- createVectors(data[,group1], data[,group2], multOmics = TRUE, featureSize = dim(microSampleMatrix)[1])
-result <- discordantRun(vectors$v1, vectors$v2, multOmics = TRUE, transform = TRUE, dim(microSampleMatrix)[1])
+vectors <- createVectors(data[,group1], data[,group2], multOmics = TRUE, featureSize = dim(TCGA_GBM_miRNASample)[1])
+result <- discordantRun(vectors$v1, vectors$v2, multOmics = TRUE, transform = TRUE, dim(TCGA_GBM_miRNASample)[1])
 resultsTable <- makeTable(result$discordPPMatrix, multOmics = TRUE, featureNames1 = featureNames1, featureNames2 = featureNames2)
