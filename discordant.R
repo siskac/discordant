@@ -67,15 +67,19 @@ fishersTrans <- function(rho) {
 	return(z)
 }
 
-createVectors <- function(data1, data2, multOmics = FALSE, featureSize = NA) {
-	if(dim(data1)[1] != dim(data2)[1]) {
-		stop("Datasets do not have same feature size.")
-	}
-	
-	statMatrix1 <- cor(t(data1))
-	statMatrix2 <- cor(t(data2))
-	if(multOmics == TRUE) {
-		if(length(featureSize) > 1) {
+createVectors <- function(x, y = NULL, groups) {
+
+	index1 <- which(groups == 1)
+	index2 <- which(groups == 2)
+
+	if(is.null(y) == FALSE) {
+		data <- rbind(x, y)
+		data1 <- data[,index1]
+		data2 <- data[,index2]
+		featureSize = dim(x)[1]
+		statMatrix1 <- cor(t(data1))
+        	statMatrix2 <- cor(t(data2))
+		if(length(featureSize) == 0) {
 			stop("Need an input for feature size.")
 		}
 		statMatrix1 <- statMatrix1[1:featureSize,(featureSize + 1):dim(data1)[1]]
@@ -85,7 +89,13 @@ createVectors <- function(data1, data2, multOmics = FALSE, featureSize = NA) {
 	statVector1 <- as.vector(statMatrix1)
 	statVector2 <- as.vector(statMatrix2)
 	
-	if(multOmics == FALSE) {
+	if(is.null(y)) {
+		data1 <- x[,index1]
+		data2 <- x[,index2]
+                statMatrix1 <- cor(t(data1))
+                statMatrix2 <- cor(t(data2))
+		statVector1 <- as.vector(statMatrix1)
+  		statVector2 <- as.vector(statMatrix2)
 		diagMatrix <- lower.tri(statMatrix1, diag = FALSE)
 		diagVector <- as.vector(diagMatrix)
 		indexVector <- which(diagVector == TRUE)
@@ -96,7 +106,7 @@ createVectors <- function(data1, data2, multOmics = FALSE, featureSize = NA) {
 	return(list(v1 = statVector1, v2 = statVector2))
 }
 
-discordantRun <- function(v1, v2, multOmics = FALSE, transform = TRUE, featureSize) {
+discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE) {
 
 	if(transform == TRUE) {
 		if(range(v1)[1] < -1 || range(v1)[2] > 1 || range(v2)[1] < -1 || range(v2)[2] > 1) {
@@ -106,9 +116,7 @@ discordantRun <- function(v1, v2, multOmics = FALSE, transform = TRUE, featureSi
 		v2 <- fishersTrans(v2)
 	}
 	
-	if(multOmics == TRUE && length(v1)%%featureSize != 0) {
-		stop("featureSize is not a multiple of vector length.")
-	}
+	featureSize = dim(x)[1]
 
 	pdata <- cbind(v1, v2)
 	
@@ -130,11 +138,11 @@ discordantRun <- function(v1, v2, multOmics = FALSE, transform = TRUE, featureSi
 
 	discordPPV <- discordSum/totalSum
 	
-	if(multOmics == TRUE) {
+	if(is.null(y) == FALSE) {
 		discordPPMatrix <- matrix(discordPPV, nrow = featureSize, byrow = FALSE)
 	}
 	
-	if(multOmics == FALSE) {
+	if(is.null(y)) {
 		tempMatrix <- matrix(NA,nrow = featureSize, ncol = featureSize)
 		diagMatrix <- lower.tri(tempMatrix, diag = FALSE)
 		diagVector <- as.vector(diagMatrix)
@@ -147,29 +155,33 @@ discordantRun <- function(v1, v2, multOmics = FALSE, transform = TRUE, featureSi
 	return(list(discordPPMatrix = discordPPMatrix, class = pd$class, probMatrix = pd$z, convergence = pd$convergence, loglik = pd$loglik))
 }
 
-makeTable <- function(discordPPMatrix, multOmics = FALSE, featureNames = NA, featureNames1 = NA, featureNames2 = NA) {
+makeTable <- function(discordPPMatrix, x, y = NULL) {
 
-	if(multOmics == FALSE) {
-		featureNames1 = featureNames
-		featureNames2 = featureNames
+	if(is.null(y)) {
+		featureNames1 = rownames(x)
+		featureNames2 = featureNames1
 		if(length(featureNames) != dim(discordPPMatrix)[1]) {
 			stop("length of feature names does not meet dimension size")
 		}
 	}
-	
-	if(multOmics == TRUE && length(featureNames2) != dim(discordPPMatrix)[2] && length(featureNames1) != dim(discordPPMatrix)[1]) {
-		stop("length of feature names does not meet dimension size")
+
+	if(is.null(y) == FALSE) {
+		featureNames1 = rownames(x)
+		featureNames2 = rownames(y)
+		if(length(featureNames1)[1] != dim(discordPPMatrix)[1] & length(featureNames2) != dim(discordPPMatrix)[2]) {
+			stop("length of feature names does not meet dimension size")
+		}
 	}
 
 	outMatrix = NULL
 	
 	for(i in 1:dim(discordPPMatrix)[1]) {
-		for(j in 1:dim(discordPPMatrix)[2]) {
-			if(is.na(discordPPMatrix[i,j]) == FALSE) {
-				row <- c(featureNames1[i], featureNames2[j], discordPPMatrix[i,j])
-				outMatrix <- rbind(outMatrix, row)
-			}
-		}
+		outputRow <- discordPPMatrix[i,]
+		index <- which(is.na(outputRow) == FALSE)
+		outputRow <- outputRow[index]
+		featureRows <- featureNames2[index]
+		matrix <- cbind(rep(featureNames1[i],length(outputRow)), featureRows, discordPPMatrix[i,])
+		outMatrix <- rbind(outMatrix, matrix)
 	}
 	return(outMatrix)
 }
