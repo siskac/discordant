@@ -1,14 +1,3 @@
----
-title: "Discordant: Mixture Model for Determining Differentially Coexpressed Pairs"
-author: "Charlotte Siska"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_document
-vignette: >
-  %\VignetteIndexEntry{Discordant}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
-
 # User's Guide
 
 ###Contents
