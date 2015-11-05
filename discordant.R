@@ -50,14 +50,12 @@ em.normal.partial.concordant <- function(data, class, tol=0.000001, restriction=
 			results <- .C("em_normal_partial_concordant", as.double(data[,1]), as.double(data[,2]), as.double(t(zxy)), n, pi, mu, sigma, nu, tau, g, loglik, as.double(tol), as.integer(restriction), as.integer(constrain), as.integer(iteration), convergence)
 		}
 		else{
-			print("Error with constrain!")
 			return(0)
 		}
 	}
 	else{
 		results <- .C("em_normal_partial_concordant", as.double(data[,1]), as.double(data[,2]), as.double(t(zxy)), n, pi, mu, sigma, nu, tau, g, loglik, as.double(tol), as.integer(restriction), as.integer(constrain), as.integer(iteration), convergence)
 	}
-	print(paste("convergence within", results[[15]], "run?", results[[16]], sep=" "))
 	return(list(model="PCD", convergence=results[[16]], pi=t(array(results[[5]],dim=c(g,g))), mu_sigma=rbind(results[[6]], results[[7]]), nu_tau=rbind(results[[8]], results[[9]]), loglik=results[[11]], class=apply(array(results[[3]], dim=c(n,g*g)),1,order,decreasing=T)[1,], z=array(results[[3]], dim=c(n,g*g))))
 }
 
@@ -152,7 +150,7 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE) {
 		discordPPMatrix <- matrix(diagVector, nrow = featureSize, byrow = FALSE)
 	}
 	
-	return(list(discordPPMatrix = discordPPMatrix, class = pd$class, probMatrix = pd$z, convergence = pd$convergence, loglik = pd$loglik))
+	return(list(discordPPMatrix = discordPPMatrix, discordPPV = discordPPV, class = pd$class, probMatrix = pd$z, convergence = pd$convergence, loglik = pd$loglik))
 }
 
 makeTable <- function(discordPPMatrix, x, y = NULL) {
