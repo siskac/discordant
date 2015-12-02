@@ -23,7 +23,7 @@ unmap <- function(classification){
 }
 
 
-em.normal.partial.concordant <- function(data, class, tol=0.000001, restriction=0, constrain=0, iteration=1000){
+em.normal.partial.concordant <- function(data, class, tol=0.001, restriction=0, constrain=0, iteration=1000){
 	n <- as.integer(dim(data)[1])
 	g <- as.integer(nlevels(as.factor(class)))
 
