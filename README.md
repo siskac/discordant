@@ -107,6 +107,7 @@ resultTable <- makeTable(result$discordPPMatrix, TCGA_GBM_transcriptSample, TCGA
 Using a three component mixture model and the EM algorithm, the model estimates the posterior probability of correlation coefficients in groups 1 and 2 for a molecular feature pair are in different components. The three components are -, + and 0 which correspond respectively to a negative, positive or no correlation. Molecular features that have correlation coefficients in *different* components are considered *differentially* correlated, as opposed when correlation coefficients are in the *same* component they are *equivalently* correlated.
 
 ![Discordant Pipeline](siska_discordant_figure1.png)
+
 Figure 1. Discordant Algorithm pipeline. a. Determine Pearson’s correlation coefficients for all A and B pairs. b. Fisher’s transformation c. Mixture model based on z scores d. Class matrix describing between group relationships e. EM Algorithm to estimate posterior probability of each class for each pair f. Identify features of –omics A and B that have high pp of DC.
 
 ###5. Outline of Analysis
