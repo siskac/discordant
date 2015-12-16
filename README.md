@@ -104,11 +104,16 @@ resultTable <- makeTable(result$discordPPMatrix, TCGA_GBM_transcriptSample, TCGA
 
 ###4. Summary of Algorithm
 
-Using a three component mixture model and the EM algorithm, the model estimates the posterior probability of correlation coefficients in groups 1 and 2 for a molecular feature pair are in different components. The three components are -, + and 0 which correspond respectively to a negative, positive or no correlation. Molecular features that have correlation coefficients in *different* components are considered *differentially* correlated, as opposed when correlation coefficients are in the *same* component they are *equivalently* correlated.
+Using a three component mixture model and the EM algorithm, the model estimates the posterior probability of correlation coefficients in groups 1 and 2 for a molecular feature pair are in different components. The correlation coefficients are generated for all possible molecular feature pairs between -omics A and -omics B (Figure 1a) and are transformed in to z scores using Fisher's tranformation (Figure 1b). The three components are -, + and 0 which correspond respectively to a negative, positive or no correlation (Figure 1c). Molecular features that have correlation coefficients in *different* components are considered *differentially* correlated, as opposed when correlation coefficients are in the *same* component they are *equivalently* correlated.
 
 ![Discordant Pipeline](siska_discordant_figure1.png)
 
 Figure 1. Discordant Algorithm pipeline. a. Determine Pearson’s correlation coefficients for all A and B pairs. b. Fisher’s transformation c. Mixture model based on z scores d. Class matrix describing between group relationships e. EM Algorithm to estimate posterior probability of each class for each pair f. Identify features of –omics A and B that have high pp of DC.
+
+The class matrix (Figure 1d) are the classes that represent all possible paired-correlation scenarios. For example, class 1 is when the correlations are 0 in both groups, but class 4 is when there is a negative correlation in group 1, but no correlation in group 2. This means that all the classes on the diagonal is when there is equivalent correlation, and classes in the off-diagonal is when there is differential correlation.
+
+After running the EM algorithm, we have 9 posterior probabilities for each molecular feature pair (Figure 1e) that correspond the the 9 classes in the class matrix. Since we want to summarize the probability that the molecular feature pair is differentially correlated, we sum the posterior probabilities representing the off-diagonal classes in the class matrix (Figure 1f).
+
 
 ###5. Outline of Analysis
 
