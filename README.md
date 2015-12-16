@@ -104,7 +104,7 @@ resultTable <- makeTable(result$discordPPMatrix, TCGA_GBM_transcriptSample, TCGA
 
 ###4. Summary of Algorithm
 
-...
+The algorithm uses a three component mixture model, and uses the EM algorithm to estimate the posterior probability that the correlation coefficients (p~1~ for group 1, and p~2~ for group 2) of a molecular feature are in two different components. 
 
 ###5. Outline of Analysis
 
