@@ -18,7 +18,7 @@
 
 ### 1. Introduction
 
-"Discordant" is an R package that identifies pairs of features that correlate differently between phenotypic groups, with application to -omics datasets. Discordant uses a mixture model that “bins” molecular feature pairs based on their type of coexpression. More information on the algorithm can be found in Siska, et. al (submitted). The final output are posterior probabilities of differential correlation. This package can be used to determine differential correlation within one –omics dataset or between two –omics datasets (provided that both –omics datasets were taken from the same samples). Also, the type of data can be any type of –omics, such as metabolomics, transcriptomic, proteomics, etc. as long as the data are continuous (numerical) rather than discrete (categorical, count).
+`Discordant` is an R package that identifies pairs of features that correlate differently between phenotypic groups, with application to -omics datasets. Discordant uses a mixture model that “bins” molecular feature pairs based on their type of coexpression. More information on the algorithm can be found in Siska, et. al. The final output are posterior probabilities of differential correlation. This package can be used to determine differential correlation within one –omics dataset or between two –omics datasets (provided that both –omics datasets were taken from the same samples). Also, the type of data can be any type of –omics, such as metabolomics, transcriptomic, proteomics, etc. as long as the data are continuous (numerical) rather than discrete (categorical, count).
 
 The functions in the "Discordant package" provide a simple pipeline for intermediate R users to determine differentially correlated pairs. The final output is a table of molecular feature pairs and their respective posterior probabilities. Functions have been written to allow flexibility for users in how they interpret results, which will be discussed further. Currently, the package only supports the comparison between two phenotypic groups (e.g., disease vs control, mutant vs wildtype).
 
@@ -32,22 +32,20 @@ The Discordant method uses C code, which has been shown to compile on Linux. The
 
 Lai, Y., Adam, B. -l., Podolsky, R., and She, J.-X. (2007). A mixture model approach to the tests of concordance and discordance between two large-scale experiments with two-sample groups. Bioinformatics 23, 1243–1250.
 
-Siska C., Bowler R.P and Kechris K. (2015). The Discordant Method: A Novel Approach to Differential Correlation. Bioinformatics. Submitted with Major Revisions.
+Siska C., Bowler R.P and Kechris K. (2015). The Discordant Method: A Novel Approach to Differential Correlation. Bioinformatics.
 
 **Installation**
 
-Open directory that contains files discordant.R and discordant.C. First compile C code for R. Open a terminal window and run the following line
+Download tarball `discordant_101.tar.gz`. In the same directory containing the tar ball, type
 
 ```
-R CMD SHLIB discordant.c
+R CMD INSTALL discordant_101.tar.gz
 ```
 
-This will create another file, discordant.so.
-
-Next, open R in the same directory. To load the Discordant method, enter the following line of code.
+Discordant has now been loaded into R. You can access discordant functions by using the `library()` function.
 
 ```
-source("discordant.R")
+library(discordant)
 ```
 
 Now all functions should be loaded into R for use.
@@ -76,8 +74,8 @@ vector which describes which group each sample belongs to using 1s and 2s
 Load data into R.
 
 ```
-load("TCGA_GBM_miRNASample.RData") # loads matrix called TCGA_GBM_miRNASample
-load("TCGA_GBM_transcriptSample.RData") # loads matrix called TCGA_GBM_transcriptSample
+data(TCGA_GBM_miRNASample) # loads matrix called TCGA_GBM_miRNASample
+data(TCGA_GBM_transcriptSample.RData) # loads matrix called TCGA_GBM_transcriptSample
 ```
 
 Determine groups in omics data.
