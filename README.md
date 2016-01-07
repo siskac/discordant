@@ -160,7 +160,7 @@ result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcriptSample, TCGA_
 
 **Make Table to Summarize Results**
 
-To ease the user in determining the posterior probability for each pair, the function `makeTable` was written. The only parameters required is the matrix of summed up discordant posterior probabilities from `discordantRun` and the data matrices.
+To ease the user in determining the posterior probability for each pair, the function `makeTable` was included. The only parameters required is the matrix of summed up discordant posterior probabilities from `discordantRun` and the data matrices.
 
 Single -omics
 ```
