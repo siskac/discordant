@@ -18,17 +18,17 @@
 
 ### 1. Introduction
 
-`Discordant` is an R package that identifies pairs of features that correlate differently between phenotypic groups, with application to -omics datasets. Discordant uses a mixture model that “bins” molecular feature pairs based on their type of coexpression. More information on the algorithm can be found in Siska, et. al. The final output are posterior probabilities of differential correlation. This package can be used to determine differential correlation within one –omics dataset or between two –omics datasets (provided that both –omics datasets were taken from the same samples). Also, the type of data can be any type of –omics, such as metabolomics, transcriptomic, proteomics, etc. as long as the data are continuous (numerical) rather than discrete (categorical, count).
+*Discordant* is an R package that identifies pairs of features that correlate differently between phenotypic groups, with application to -omics datasets. *Discordant* uses a mixture model that “bins” molecular feature pairs based on their type of coexpression. More information on the algorithm can be found in Siska, et. al. The final output are posterior probabilities of differential correlation. This package can be used to determine differential correlation within one –omics dataset or between two –omics datasets (provided that both –omics datasets were taken from the same samples). Also, the type of data can be any type of –omics, such as metabolomics, transcriptomic, proteomics, etc. as long as the data are continuous (numerical) rather than discrete (categorical, count).
 
-The functions in the "Discordant package" provide a simple pipeline for intermediate R users to determine differentially correlated pairs. The final output is a table of molecular feature pairs and their respective posterior probabilities. Functions have been written to allow flexibility for users in how they interpret results, which will be discussed further. Currently, the package only supports the comparison between two phenotypic groups (e.g., disease vs control, mutant vs wildtype).
+The functions in the *Discordant* package provide a simple pipeline for intermediate R users to determine differentially correlated pairs. The final output is a table of molecular feature pairs and their respective posterior probabilities. Functions have been written to allow flexibility for users in how they interpret results, which will be discussed further. Currently, the package only supports the comparison between two phenotypic groups (e.g., disease vs control, mutant vs wildtype).
 
-The Discordant method uses C code, which has been shown to compile on Linux. The C code is not able to compile on OSX Yosemite, however testing has not expanded to other operating systems.
+From preliminary testing, *Discordant* compiles on OSX and Linux. We have not been able to test it on Windows. If you have tried to install this on windows, please let us know if it worked or any issues you ran into.
 
 ### 2. Preliminaries
 
 **Citing Discordant**
 
-"Discordant" is originally derived from the Concordant algorithm written by Lai, et. al. When citing Discordant, please also include Lai, et. al in references.
+*Discordant* is originally derived from the Concordant algorithm written by Lai, et. al. When citing Discordant, please also include Lai, et. al in references.
 
 Lai, Y., Adam, B. -l., Podolsky, R., and She, J.-X. (2007). A mixture model approach to the tests of concordance and discordance between two large-scale experiments with two-sample groups. Bioinformatics 23, 1243–1250.
 
@@ -54,9 +54,9 @@ Now all functions should be loaded into R for use.
 
 **Brief Introduction**
 
-Single –omics refers to when the Discordant analysis is performed within one –omics dataset. This means that all molecular features are analyzed to each other, rather than separating them by molecular type. This is mainly applicable to one –omics dataset, such as a single microarray experiment.
+Single –omics refers to when the *Discordant* analysis is performed within one –omics dataset. This means that all molecular features are analyzed to each other, rather than separating them by molecular type. This is mainly applicable to one –omics dataset, such as a single microarray experiment.
 
-Dual -omics refers to when the Discordant analysis is performed with two -omics datasets. Molecular feature pairs analyzed are between the two -omics, i.e. transcript-protein, protein-metabolite, etc.
+Dual -omics refers to when the *Discordant* analysis is performed with two -omics datasets. Molecular feature pairs analyzed are between the two -omics, i.e. transcript-protein, protein-metabolite, etc.
 
 **Required Inputs**
 
@@ -75,7 +75,7 @@ Load data into R.
 
 ```
 data(TCGA_GBM_miRNASample) # loads matrix called TCGA_GBM_miRNASample
-data(TCGA_GBM_transcriptSample.RData) # loads matrix called TCGA_GBM_transcriptSample
+data(TCGA_GBM_transcriptSample) # loads matrix called TCGA_GBM_transcriptSample
 ```
 
 Determine groups in omics data.
@@ -107,7 +107,7 @@ Using a three component mixture model and the EM algorithm, the model predicts i
 ![Discordant Pipeline](siska_discordant_figure1.png)
 
 <<<<<<< HEAD
-######## Figure 1. Discordant Algorithm pipeline. a. Determine Pearson’s correlation coefficients for all A and B pairs. b. Fisher’s transformation c. Mixture model based on z scores d. Class matrix describing between group relationships e. EM Algorithm to estimate posterior probability of each class for each pair f. Identify features of –omics A and B that have high pp of DC.
+######## Figure 1. *Discordant* Algorithm pipeline. a. Determine Pearson’s correlation coefficients for all A and B pairs. b. Fisher’s transformation c. Mixture model based on z scores d. Class matrix describing between group relationships e. EM Algorithm to estimate posterior probability of each class for each pair f. Identify features of –omics A and B that have high pp of DC.
 =======
 Figure 1. Discordant Algorithm pipeline. a. Determine Pearson’s correlation coefficients for all A and B pairs. b. Fisher’s transformation c. Mixture model based on z scores d. Class matrix describing between group relationships e. EM Algorithm to estimate posterior probability of each class for each pair f. Identify features of –omics A and B that have high pp of DC.
 >>>>>>> 2c4a5b4ce95a9ed7131e75741c42cbbbac4f1355
