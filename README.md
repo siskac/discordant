@@ -106,7 +106,7 @@ Using a three component mixture model and the EM algorithm, the model predicts i
 
 ![Algorithm Pipeline](siska_discordant_figure1.png)
 
->>>>>>> Figure 1. Algorithm pipeline. a. Determine Pearson’s correlation coefficients for all A and B pairs. b. Fisher’s transformation c. Mixture model based on z scores d. Class matrix describing between group relationships e. EM Algorithm to estimate posterior probability of each class for each pair f. Identify features of –omics A and B that have high pp of DC.
+Figure 1. Algorithm pipeline. a. Determine Pearson’s correlation coefficients for all A and B pairs. b. Fisher’s transformation c. Mixture model based on z scores d. Class matrix describing between group relationships e. EM Algorithm to estimate posterior probability of each class for each pair f. Identify features of –omics A and B that have high pp of DC.
 
 The class matrix (Figure 1d) are the classes that represent all possible paired-correlation scenarios. These scenarios are based off the components in the mixture models. Molecular features that have correlation coefficients in *different* components are considered *differentially* correlated, as opposed to when correlation coefficients are in the *same* component they are *equivalently* correlated. This can be visualized in the class matrix, where the rows represent the components for group 1 and the columns represent the components for group 2. The classes on the diagonal represent equivalent correlation, and classes in the off-diagonal represent differential correlation.
 
