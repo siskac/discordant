@@ -36,7 +36,7 @@ Siska C., Bowler R.P and Kechris K. (2015). The Discordant Method: A Novel Appro
 
 **Installation**
 
-Download tarball `discordant_101.tar.gz`. In the same directory containing the tar ball, type
+Download tarball `discordant_2.0.0.tar.gz`. In the same directory containing the tar ball, type
 
 ```
 R CMD INSTALL discordant_101.tar.gz
@@ -131,6 +131,8 @@ Dual -omics
 vectors <- createVectors(TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample, groups = groups)
 ```
 
+We also have included different options for correlation metrics. This argument is called `cor.method` and its default is `"spearman"`. These options are `"spearman"`, `"pearson"`, `"bwmc"` and `"sparcc"`. The algorithm for SparCC was introduced by <a href = "http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002687">Friedman et al</a> and is available online at <a href = "https://bitbucket.org/yonatanf/sparcc">bitbucket</a>.
+
 createVectors has two outputs:
 
 `v1`  
@@ -155,6 +157,33 @@ Dual -omics
 ```
 result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample)
 ```
+
+There are now optional arguments to make Discordant more flexible. There are two use subsampling in the EM algorithm and extend the mixture model from 3 to 5 components.
+
+***Subsampling***
+
+Subsampling is when independent feature pairs are drawn, ran through the EM algorithm to estimate parameters for a number of iterations, and then these paramters are used to maximize posterior probabilities for all feature pairs. There are several arguments introduced so the subsampling option can be run to the user's satisfaction. This option was introduced to make the Discordant method to run faster and also solve the independence assumption. Of course, it has its own set of issues which are explained in Siska, et al (submitted).
+
+The argument `subsampling` must be set to `TRUE` for subsampling to be used. The number of independent feature pairs to be subsampled is determined by the argument `subSize` whose default value is the number of rows in `x`. The number of independent feature pairs must be less or equal to the number of features in `x` and `y`. The number of iterations to be run is set by the argument `iter`, whose default value is 100.
+
+Example:
+
+```
+result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample, subsampling = TRUE, iter = 200, subSize = 20)
+```
+
+***3 to 5 Components in Mixture Model***
+
+Having 5 components instead of 3 in the mixture model allows the identification of feature pairs that have elevated differential correlation, or when there are associations in both groups in the same direction but one is more extreme. While this option introduces a new type of differential correlation, it does run longer and has less power than the 3-component mixture model.
+
+The argument to use a 5-component mixture model instead of a 3-component model is `components` set to `5`. The default is to run the 3-component mixture model.
+
+Example:
+
+```
+result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample, components = 5)
+```
+
 
 **Make Table to Summarize Results**
 
