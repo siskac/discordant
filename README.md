@@ -36,7 +36,7 @@ Siska C., Bowler R.P and Kechris K. (2015). The Discordant Method: A Novel Appro
 
 **Installation**
 
-Download tarball `discordant_101.tar.gz`. In the same directory containing the tar ball, type
+Download tarball `discordant_2.0.0.tar.gz`. In the same directory containing the tar ball, type
 
 ```
 R CMD INSTALL discordant_101.tar.gz
@@ -120,6 +120,8 @@ After running the EM algorithm, we have 9 posterior probabilities for each molec
 To run the *Discordant* algorithm correlation vectors respective to each group are necessary for input, which are easy to create using the function `createVectors`. Each correlation coefficient represents the linear correlation between two molecular features. The molecular features depend if a single -omics or dual -omics analysis has been performed. Correlation between molecular features in the same -omics dataset is single -omics, and correlation between molecular features in two different -omics datasets is dual -omics. Whether or not single -omics or dual -omics analysis is performed depends on whether one or two matrices are parameters for this function.
 
 The other parameter is `groups`, which is a vector containing 1s and 2s that correspond to the location of samples in the column of the matrix for group 1 and group 2. For example, the control group is group 1 and the experimental group 2, and the location of samples corresponding to the two groups matches the locations of 1s and 2s in the group vector.
+
+We also have included different options for correlation metrics. These options are Spearman, Pearson, biweight midcorrelation and SparCC. The algorithm for SparCC was introduced by <a href = "http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002687">Friedman et al</a> and is available online at <a href = "https://bitbucket.org/yonatanf/sparcc">bitbucket</a>.
 
 Single -omics
 ```
