@@ -121,7 +121,7 @@ To run the *Discordant* algorithm correlation vectors respective to each group a
 
 The other parameter is `groups`, which is a vector containing 1s and 2s that correspond to the location of samples in the column of the matrix for group 1 and group 2. For example, the control group is group 1 and the experimental group 2, and the location of samples corresponding to the two groups matches the locations of 1s and 2s in the group vector.
 
-We also have included different options for correlation metrics. These options are Spearman, Pearson, biweight midcorrelation and SparCC. The algorithm for SparCC was introduced by <a href = "http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002687">Friedman et al</a> and is available online at <a href = "https://bitbucket.org/yonatanf/sparcc">bitbucket</a>.
+We also have included different options for correlation metrics. These options are `"spearman", "pearson", "bwmc"` and `"sparcc"`. The algorithm for SparCC was introduced by <a href = "http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002687">Friedman et al</a> and is available online at <a href = "https://bitbucket.org/yonatanf/sparcc">bitbucket</a>. This argument is called `cor.method` and its default is `"spearman"`.
 
 Single -omics
 ```
