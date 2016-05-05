@@ -117,7 +117,7 @@ groups <- c(rep(1,15), rep(2,42))
 *Single -omics analysis*
 
 ```
-vectors <- createVectors(TCGA_Breast_RNASeq, groups = groups)
+vectors <- createVectors(TCGA_Breast_RNASeq, groups = groups, cor.method = c("bwmc"))
 result <- discordantRun(vectors$v1, vectors$v2, TCGA_Breast_RNASeq)
 resultTable <- makeTable(result$discordPPMatrix, TCGA_Breast_RNASeq)
 ```
@@ -162,7 +162,11 @@ Dual -omics
 vectors <- createVectors(TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample, groups = groups)
 ```
 
-We also have included different options for correlation metrics. This argument is called `cor.method` and its default is `"spearman"`. These options are `"spearman"`, `"pearson"`, `"bwmc"` and `"sparcc"`. The algorithm for SparCC was introduced by <a href = "http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002687">Friedman et al</a> and is available online at <a href = "https://bitbucket.org/yonatanf/sparcc">bitbucket</a>.
+**Correlation Metric**
+
+We also have included different options for correlation metrics. This argument is called `cor.method` and its default is `"spearman"`. Other options are `"pearson"`, `"bwmc"` and `"sparcc"`. For information and comparison of Spearman, Pearson and biweight midcorrelation (bwmc) please read this paper by <a href = "http://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-13-328">Song et al</a>.
+
+The algorithm for SparCC was introduced by <a href = "http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002687">Friedman et al</a> and is available online at <a href = "https://bitbucket.org/yonatanf/sparcc">bitbucket</a>. We use R code written by <a href = "https://github.com/huayingfang/CCLasso">Huaying Fang </a>.
 
 createVectors has two outputs:
 
