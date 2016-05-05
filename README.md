@@ -101,7 +101,7 @@ resultTable <- makeTable(result$discordPPMatrix, TCGA_GBM_transcriptSample, TCGA
 ```
 **Example Run with Sequencing**
 
-Load data into R.
+Load data into R. Datasets with voom-transformation are also available (TCGA_Breast_miRNASeq_voom and TCGA_Breast_RNASeq_voom).
 
 ```
 data(TCGA_Breast_miRNASeq) # loads matrix called TCGA_Breast_miRNASeq
