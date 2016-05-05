@@ -146,7 +146,7 @@ After running the EM algorithm, we have 9 posterior probabilities for each molec
 
 ###5. Outline of Analysis
 
-**Create Correlation Vectors**
+####**Create Correlation Vectors**
 
 To run the *Discordant* algorithm correlation vectors respective to each group are necessary for input, which are easy to create using the function `createVectors`. Each correlation coefficient represents the linear correlation between two molecular features. The molecular features depend if a single -omics or dual -omics analysis has been performed. Correlation between molecular features in the same -omics dataset is single -omics, and correlation between molecular features in two different -omics datasets is dual -omics. Whether or not single -omics or dual -omics analysis is performed depends on whether one or two matrices are parameters for this function.
 
@@ -161,13 +161,6 @@ Dual -omics
 ```
 vectors <- createVectors(TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample, groups = groups)
 ```
-
-**Correlation Metric**
-
-We also have included different options for correlation metrics. This argument is called `cor.method` and its default is `"spearman"`. Other options are `"pearson"`, `"bwmc"` and `"sparcc"`. For information and comparison of Spearman, Pearson and biweight midcorrelation (bwmc) please read this paper by <a href = "http://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-13-328">Song et al</a>.
-
-The algorithm for SparCC was introduced by <a href = "http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002687">Friedman et al</a> and is available online at <a href = "https://bitbucket.org/yonatanf/sparcc">bitbucket</a>. We use R code written by <a href = "https://github.com/huayingfang/CCLasso">Huaying Fang </a>.
-
 createVectors has two outputs:
 
 `v1`  
@@ -175,6 +168,13 @@ Correlation vector of molecular feature pairs corresponding to samples labeled 1
 
 `v2`  
 Correlation vector of molecular feature pairs corresponding to samples labeled 2 in group parameter.
+
+
+**Correlation Metric**
+
+We also have included different options for correlation metrics. This argument is called `cor.method` and its default is `"spearman"`. Other options are `"pearson"`, `"bwmc"` and `"sparcc"`. For information and comparison of Spearman, Pearson and biweight midcorrelation (bwmc) please read this paper by <a href = "http://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-13-328">Song et al</a>.
+
+The algorithm for SparCC was introduced by <a href = "http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002687">Friedman et al</a> and is available online at <a href = "https://bitbucket.org/yonatanf/sparcc">bitbucket</a>. We use R code written by <a href = "https://github.com/huayingfang/CCLasso">Huaying Fang </a>.
 
 
 **Run *Discordant* Algorithm**
