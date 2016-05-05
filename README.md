@@ -39,7 +39,7 @@ Siska C., Bowler R.P and Kechris K. (2015). The Discordant Method: A Novel Appro
 Download tarball `discordant_2.0.0.tar.gz`. In the same directory containing the tar ball, type
 
 ```
-R CMD INSTALL discordant_101.tar.gz
+R CMD INSTALL discordant_2.0.0.tar.gz
 ```
 
 Discordant has now been loaded into R. You can access discordant functions by using the `library()` function.
@@ -69,13 +69,13 @@ m by n matrix where m are features and n are samples. Optional, will induce dual
 `groups`  
 vector which describes which group each sample belongs to using 1s and 2s
 
-**Example run**
+**Example Run with Microarrays**
 
 Load data into R.
 
 ```
-data(TCGA_GBM_miRNASample) # loads matrix called TCGA_GBM_miRNASample
-data(TCGA_GBM_transcriptSample) # loads matrix called TCGA_GBM_transcriptSample
+data(TCGA_GBM_miRNA_microarray) # loads matrix called TCGA_GBM_miRNA_microarray
+data(TCGA_GBM_transcript_microarray) # loads matrix called TCGA_GBM_microarray
 ```
 
 Determine groups in omics data.
@@ -87,18 +87,49 @@ groups <- c(rep(1,10), rep(2,10))
 *Single -omics analysis*
 
 ```
-vectors <- createVectors(TCGA_GBM_transcriptSample, groups = groups)
-result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcriptSample)
-resultTable <- makeTable(result$discordPPMatrix, TCGA_GBM_transcriptSample)
+vectors <- createVectors(TCGA_GBM_transcript_microarray, groups = groups, cor.method = c("spearman"))
+result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcript_microarray)
+resultTable <- makeTable(result$discordPPMatrix, TCGA_GBM_transcript_microarray)
 ```
 
 *Dual -omics analysis*
 
 ```
-vectors <- createVectors(TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample, groups = groups)
+vectors <- createVectors(TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample, groups = groups, cor.method = c("pearson"))
 result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample)
 resultTable <- makeTable(result$discordPPMatrix, TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample)
 ```
+**Example Run with Sequencing**
+
+Load data into R.
+
+```
+data(TCGA_Breast_miRNASeq) # loads matrix called TCGA_Breast_miRNASeq
+data(TCGA_Breast_RNASeq) # loads matrix called TCGA_Breast_RNASeq
+```
+
+Determine groups in omics data.
+
+```
+groups <- c(rep(1,15), rep(2,42))
+```
+
+*Single -omics analysis*
+
+```
+vectors <- createVectors(TCGA_Breast_RNASeq, groups = groups, cor.method = c("bwmc"))
+result <- discordantRun(vectors$v1, vectors$v2, TCGA_Breast_RNASeq)
+resultTable <- makeTable(result$discordPPMatrix, TCGA_Breast_RNASeq)
+```
+
+*Dual -omics analysis*
+
+```
+vectors <- createVectors(TCGA_Breast_RNASeq, TCGA_Breast_miRNASeq, groups = groups)
+result <- discordantRun(vectors$v1, vectors$v2, TCGA__Breast_RNASeq, TCGA_Breast_miRNASeq)
+resultTable <- makeTable(result$discordPPMatrix, TCGA_Breast_RNASeq, TCGA_Breast_miRNASeq)
+```
+
 
 ###4. Summary of Algorithm
 
@@ -115,7 +146,7 @@ After running the EM algorithm, we have 9 posterior probabilities for each molec
 
 ###5. Outline of Analysis
 
-**Create Correlation Vectors**
+####**Create Correlation Vectors**
 
 To run the *Discordant* algorithm correlation vectors respective to each group are necessary for input, which are easy to create using the function `createVectors`. Each correlation coefficient represents the linear correlation between two molecular features. The molecular features depend if a single -omics or dual -omics analysis has been performed. Correlation between molecular features in the same -omics dataset is single -omics, and correlation between molecular features in two different -omics datasets is dual -omics. Whether or not single -omics or dual -omics analysis is performed depends on whether one or two matrices are parameters for this function.
 
@@ -130,9 +161,6 @@ Dual -omics
 ```
 vectors <- createVectors(TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample, groups = groups)
 ```
-
-We also have included different options for correlation metrics. This argument is called `cor.method` and its default is `"spearman"`. These options are `"spearman"`, `"pearson"`, `"bwmc"` and `"sparcc"`. The algorithm for SparCC was introduced by <a href = "http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002687">Friedman et al</a> and is available online at <a href = "https://bitbucket.org/yonatanf/sparcc">bitbucket</a>.
-
 createVectors has two outputs:
 
 `v1`  
@@ -142,7 +170,14 @@ Correlation vector of molecular feature pairs corresponding to samples labeled 1
 Correlation vector of molecular feature pairs corresponding to samples labeled 2 in group parameter.
 
 
-**Run *Discordant* Algorithm**
+**Correlation Metric**
+
+We also have included different options for correlation metrics. This argument is called `cor.method` and its default is `"spearman"`. Other options are `"pearson"`, `"bwmc"` and `"sparcc"`. For information and comparison of Spearman, Pearson and biweight midcorrelation (bwmc) please read this paper by <a href = "http://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-13-328">Song et al</a>.
+
+The algorithm for SparCC was introduced by <a href = "http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002687">Friedman et al</a> and is available online at <a href = "https://bitbucket.org/yonatanf/sparcc">bitbucket</a>. We use R code written by <a href = "https://github.com/huayingfang/CCLasso">Huaying Fang </a>.
+
+
+####**Run *Discordant* Algorithm**
 
 The *Discordant* Algorithm is in the function `discordantRun` requires two correlation vectors and the original data. If the user wishes to generate their own correlation vector before inputting into the dataset, they can do so. However, the function will break if the dimenions of the datasets inserted do not match the correlation vector.
 
@@ -150,17 +185,17 @@ The posterior probability output of the *Discordant* algorithm are the summed DC
 
 Single -omics
 ```
-result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcriptSample)
+result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcript_microarray)
 ```
 
 Dual -omics
 ```
-result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample)
+result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcript_microarray, TCGA_GBM_miRNA_microarray)
 ```
 
 There are now optional arguments to make Discordant more flexible. There are two use subsampling in the EM algorithm and extend the mixture model from 3 to 5 components.
 
-***Subsampling***
+**Subsampling**
 
 Subsampling is when independent feature pairs are drawn, ran through the EM algorithm to estimate parameters for a number of iterations, and then these paramters are used to maximize posterior probabilities for all feature pairs. There are several arguments introduced so the subsampling option can be run to the user's satisfaction. This option was introduced to make the Discordant method to run faster and also solve the independence assumption. Of course, it has its own set of issues which are explained in Siska, et al (submitted).
 
@@ -169,10 +204,10 @@ The argument `subsampling` must be set to `TRUE` for subsampling to be used. The
 Example:
 
 ```
-result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample, subsampling = TRUE, iter = 200, subSize = 20)
+result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcript_microarray, TCGA_GBM_miRNA_microarray, subsampling = TRUE, iter = 200, subSize = 20)
 ```
 
-***3 to 5 Components in Mixture Model***
+**3 to 5 Components in Mixture Model**
 
 Having 5 components instead of 3 in the mixture model allows the identification of feature pairs that have elevated differential correlation, or when there are associations in both groups in the same direction but one is more extreme. While this option introduces a new type of differential correlation, it does run longer and has less power than the 3-component mixture model.
 
@@ -181,20 +216,20 @@ The argument to use a 5-component mixture model instead of a 3-component model i
 Example:
 
 ```
-result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample, components = 5)
+result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcript_microarray, TCGA_GBM_miRNA_microarray, components = 5)
 ```
 
 
-**Make Table to Summarize Results**
+####**Make Table to Summarize Results**
 
 To ease the user in determining the posterior probability for each pair, the function `makeTable` was included. The only parameters required is the matrix of summed up discordant posterior probabilities from `discordantRun` and the data matrices.
 
 Single -omics
 ```
-resultTable <- makeTable(result$discordPPMatrix, TCGA_GBM_transcriptSample)
+resultTable <- makeTable(result$discordPPMatrix, TCGA_GBM_transcript_microarray)
 ```
 
 Dual -omics
 ```
-resultTable <- makeTable(result$discordPPMatrix, TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample)
+resultTable <- makeTable(result$discordPPMatrix, TCGA_GBM_transcript_microarray, TCGA_GBM_miRNA_microarray)
 ```
