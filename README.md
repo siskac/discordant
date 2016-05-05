@@ -177,7 +177,7 @@ We also have included different options for correlation metrics. This argument i
 The algorithm for SparCC was introduced by <a href = "http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002687">Friedman et al</a> and is available online at <a href = "https://bitbucket.org/yonatanf/sparcc">bitbucket</a>. We use R code written by <a href = "https://github.com/huayingfang/CCLasso">Huaying Fang </a>.
 
 
-**Run *Discordant* Algorithm**
+####**Run *Discordant* Algorithm**
 
 The *Discordant* Algorithm is in the function `discordantRun` requires two correlation vectors and the original data. If the user wishes to generate their own correlation vector before inputting into the dataset, they can do so. However, the function will break if the dimenions of the datasets inserted do not match the correlation vector.
 
@@ -195,7 +195,7 @@ result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcriptSample, TCGA_
 
 There are now optional arguments to make Discordant more flexible. There are two use subsampling in the EM algorithm and extend the mixture model from 3 to 5 components.
 
-***Subsampling***
+**Subsampling**
 
 Subsampling is when independent feature pairs are drawn, ran through the EM algorithm to estimate parameters for a number of iterations, and then these paramters are used to maximize posterior probabilities for all feature pairs. There are several arguments introduced so the subsampling option can be run to the user's satisfaction. This option was introduced to make the Discordant method to run faster and also solve the independence assumption. Of course, it has its own set of issues which are explained in Siska, et al (submitted).
 
@@ -207,7 +207,7 @@ Example:
 result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample, subsampling = TRUE, iter = 200, subSize = 20)
 ```
 
-***3 to 5 Components in Mixture Model***
+**3 to 5 Components in Mixture Model**
 
 Having 5 components instead of 3 in the mixture model allows the identification of feature pairs that have elevated differential correlation, or when there are associations in both groups in the same direction but one is more extreme. While this option introduces a new type of differential correlation, it does run longer and has less power than the 3-component mixture model.
 
@@ -220,16 +220,16 @@ result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcriptSample, TCGA_
 ```
 
 
-**Make Table to Summarize Results**
+####**Make Table to Summarize Results**
 
 To ease the user in determining the posterior probability for each pair, the function `makeTable` was included. The only parameters required is the matrix of summed up discordant posterior probabilities from `discordantRun` and the data matrices.
 
 Single -omics
 ```
-resultTable <- makeTable(result$discordPPMatrix, TCGA_GBM_transcriptSample)
+resultTable <- makeTable(result$discordPPMatrix, TCGA_GBM_transcript_microarray)
 ```
 
 Dual -omics
 ```
-resultTable <- makeTable(result$discordPPMatrix, TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample)
+resultTable <- makeTable(result$discordPPMatrix, TCGA_GBM_transcript_microarray, TCGA_GBM_miRNA_microarray)
 ```
