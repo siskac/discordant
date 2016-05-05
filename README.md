@@ -185,12 +185,12 @@ The posterior probability output of the *Discordant* algorithm are the summed DC
 
 Single -omics
 ```
-result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcriptSample)
+result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcript_microarray)
 ```
 
 Dual -omics
 ```
-result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample)
+result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcript_microarray, TCGA_GBM_miRNA_microarray)
 ```
 
 There are now optional arguments to make Discordant more flexible. There are two use subsampling in the EM algorithm and extend the mixture model from 3 to 5 components.
@@ -204,7 +204,7 @@ The argument `subsampling` must be set to `TRUE` for subsampling to be used. The
 Example:
 
 ```
-result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample, subsampling = TRUE, iter = 200, subSize = 20)
+result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcript_microarray, TCGA_GBM_miRNA_microarray, subsampling = TRUE, iter = 200, subSize = 20)
 ```
 
 **3 to 5 Components in Mixture Model**
@@ -216,7 +216,7 @@ The argument to use a 5-component mixture model instead of a 3-component model i
 Example:
 
 ```
-result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample, components = 5)
+result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcript_microarray, TCGA_GBM_miRNA_microarray, components = 5)
 ```
 
 
