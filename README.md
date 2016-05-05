@@ -39,7 +39,7 @@ Siska C., Bowler R.P and Kechris K. (2015). The Discordant Method: A Novel Appro
 Download tarball `discordant_2.0.0.tar.gz`. In the same directory containing the tar ball, type
 
 ```
-R CMD INSTALL discordant_101.tar.gz
+R CMD INSTALL discordant_2.0.0.tar.gz
 ```
 
 Discordant has now been loaded into R. You can access discordant functions by using the `library()` function.
@@ -69,13 +69,13 @@ m by n matrix where m are features and n are samples. Optional, will induce dual
 `groups`  
 vector which describes which group each sample belongs to using 1s and 2s
 
-**Example run**
+**Example Run with Microarrays**
 
 Load data into R.
 
 ```
-data(TCGA_GBM_miRNASample) # loads matrix called TCGA_GBM_miRNASample
-data(TCGA_GBM_transcriptSample) # loads matrix called TCGA_GBM_transcriptSample
+data(TCGA_GBM_miRNA_microarray) # loads matrix called TCGA_GBM_miRNA_microarray
+data(TCGA_GBM_transcript_microarray) # loads matrix called TCGA_GBM_microarray
 ```
 
 Determine groups in omics data.
@@ -87,18 +87,49 @@ groups <- c(rep(1,10), rep(2,10))
 *Single -omics analysis*
 
 ```
-vectors <- createVectors(TCGA_GBM_transcriptSample, groups = groups)
-result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcriptSample)
-resultTable <- makeTable(result$discordPPMatrix, TCGA_GBM_transcriptSample)
+vectors <- createVectors(TCGA_GBM_transcript_microarray, groups = groups, cor.method = c("spearman"))
+result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcript_microarray)
+resultTable <- makeTable(result$discordPPMatrix, TCGA_GBM_transcript_microarray)
 ```
 
 *Dual -omics analysis*
 
 ```
-vectors <- createVectors(TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample, groups = groups)
+vectors <- createVectors(TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample, groups = groups, cor.method = c("pearson"))
 result <- discordantRun(vectors$v1, vectors$v2, TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample)
 resultTable <- makeTable(result$discordPPMatrix, TCGA_GBM_transcriptSample, TCGA_GBM_miRNASample)
 ```
+**Example Run with Sequencing**
+
+Load data into R.
+
+```
+data(TCGA_Breast_miRNASeq) # loads matrix called TCGA_Breast_miRNASeq
+data(TCGA_Breast_RNASeq) # loads matrix called TCGA_Breast_RNASeq
+```
+
+Determine groups in omics data.
+
+```
+groups <- c(rep(1,15), rep(2,42))
+```
+
+*Single -omics analysis*
+
+```
+vectors <- createVectors(TCGA_Breast_RNASeq, groups = groups)
+result <- discordantRun(vectors$v1, vectors$v2, TCGA_Breast_RNASeq)
+resultTable <- makeTable(result$discordPPMatrix, TCGA_Breast_RNASeq)
+```
+
+*Dual -omics analysis*
+
+```
+vectors <- createVectors(TCGA_Breast_RNASeq, TCGA_Breast_miRNASeq, groups = groups)
+result <- discordantRun(vectors$v1, vectors$v2, TCGA__Breast_RNASeq, TCGA_Breast_miRNASeq)
+resultTable <- makeTable(result$discordPPMatrix, TCGA_Breast_RNASeq, TCGA_Breast_miRNASeq)
+```
+
 
 ###4. Summary of Algorithm
 
