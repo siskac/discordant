@@ -1,9 +1,9 @@
 **Install Discordant**
 
-Download tarball `discordant_0.0.9.tar.gz`. In the same directory containing the tar ball, type
+Download tarball `discordant_0.99.0.tar.gz`. In the same directory containing the tar ball, type
 
 ```
-R CMD INSTALL discordant_0.0.0.tar.gz
+R CMD INSTALL discordant_0.99.0.tar.gz
 ```
 
 Discordant has now been loaded into R. You can access discordant functions by using the `library()` function.
