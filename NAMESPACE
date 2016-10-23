@@ -1,0 +1,9 @@
+useDynLib(discordant)
+
+import(MASS)
+import(gtools)
+import(biwt)
+import(tools)
+import(stats)
+
+export(createVectors, discordantRun, fishersTrans, splitMADOutlier)
