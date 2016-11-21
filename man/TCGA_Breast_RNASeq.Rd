@@ -6,12 +6,15 @@
 	This dataset contains TMM normalized RNA count values from RNASeq that was taken from the Cancer Genome Atlas, or TCGA. It has 100 features and 57 samples. The original dataset had 17972 features and 57 samples.
 }
 
+\value{
+Breast RNA-Seq count data with 100 features and 57 samples.}
+
 \references{
 National Institues of Health. The Cancer Genome Atlas. http://cancergenome.nih.gov/
 }
 
 \author{
-Charlotte Siska <siska.charlotte@gmail.edu>
+Charlotte Siska <siska.charlotte@gmail.com>
 }
 
 \usage{TCGA_Breast_RNASeq}

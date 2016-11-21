@@ -29,7 +29,7 @@ Friedman J and Alm EJ. Inferring Correlation Networks from Genomic Survey Data. 
 }
 
 \author{
-Charlotte Siska <siska.charlotte@gmail.edu>
+Charlotte Siska <siska.charlotte@gmail.com>
 }
 
 \examples{

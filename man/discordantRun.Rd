@@ -40,7 +40,7 @@ Lai Y, Adam B-l, Podolsky R, She J-X. A mixture model approach to the tests of c
 }
 
 \author{
-Charlotte Siska <siska.charlotte@gmail.edu>
+Charlotte Siska <siska.charlotte@gmail.com>
 }
 
 \examples{

@@ -14,6 +14,10 @@ fishersTrans(rho)
   \item{rho}{Integer or numeric list of Pearson's correlation coefficients}
 }
 
+\value{
+Returns Fisher-transformed correlation coefficients
+}
+
 \references{
 Fisher, R.A. (1915). "Frequency distribution of the values of the correlation coefficient in samples of an indefinitely large population". Biometrika (Biometrika Trust) 10 (4).
 }
