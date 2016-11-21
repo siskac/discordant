@@ -1,4 +1,5 @@
 #include <R.h>
+#include <R_ext/Rdynload.h>
 
 void em_normal_partial_concordant(double *x, double *y, double *zxy, int *n, double *pi, double *mu, double *sigma, double *nu, double *tau, int *g, double *loglik, double *tol, int *restriction, int *constrain, int *iteration, int *convergence) {
 	int i, j, k, flag, iter;
@@ -233,4 +234,38 @@ void em_normal_partial_concordant(double *x, double *y, double *zxy, int *n, dou
 			(*convergence) = 1;
 		}
 	}
+}
+
+void subsampling(double *x, double *y, double *zxy, int *n, double *pi, double *mu, double *sigma, double *nu, double *tau, int *g) {
+        int i, j, k;
+        double temp;
+        for(k=0;k<(*n);k++){
+                temp = 0;
+                for(i=0;i<(*g);i++){
+                        for(j=0;j<(*g);j++){
+                                temp = temp + pi[i*(*g)+j] * ( exp(0-0.5*(x[k]-mu[i])*(x[k]-mu[i])/sigma[i])/sqrt(2*PI*sigma[i]) )*( exp(0-0.5*(y[k]-nu[j])*(y[k]-nu[j])/tau[j])/sqrt(2*PI*tau[j]) );
+                        }
+                }
+                for(i=0;i<(*g);i++) {
+                        for(j=0;j<(*g);j++){
+                                zxy[(j*(*g)+i)*(*n)+k] = zxy[(j*(*g)+i)*(*n)+k] + pi[i*(*g)+j] * ( exp(0-0.5*(x[k]-mu[i])*(x[k]-mu[i])/sigma[i])/sqrt(2*PI*sigma[i]) )*( exp(0-0.5*(y[k]-nu[j])*(y[k]-nu[j])/tau[j])/sqrt(2*PI*tau[j]) )/temp;
+                        }
+                }
+        }
+
+}
+
+static const
+R_CMethodDef cMethods[] = {
+        {"em_normal_partial_concordant", (DL_FUNC) &em_normal_partial_concordant, 16},
+	{"subsampling", (DL_FUNC) &subsampling, 16},
+};
+
+void R_init_myRoutines(DllInfo *info)
+{
+        /* Register the .C and .Call routines.
+        No .Fortran() or .External() routines,
+        so pass those arrays as NULL.
+        */
+        R_registerRoutines(info, cMethods, NULL, NULL, NULL);
 }
