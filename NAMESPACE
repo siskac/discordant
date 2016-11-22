@@ -1,4 +1,4 @@
-useDynLib(discordant)
+useDynLib(discordant, .registration = TRUE)
 
 import(MASS)
 import(gtools)

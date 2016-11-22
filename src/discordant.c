@@ -1,5 +1,6 @@
 #include <R.h>
 #include <R_ext/Rdynload.h>
+#include <Rinternals.h>
 
 void em_normal_partial_concordant(double *x, double *y, double *zxy, int *n, double *pi, double *mu, double *sigma, double *nu, double *tau, int *g, double *loglik, double *tol, int *restriction, int *constrain, int *iteration, int *convergence) {
 	int i, j, k, flag, iter;
@@ -255,17 +256,14 @@ void subsampling(double *x, double *y, double *zxy, int *n, double *pi, double *
 
 }
 
-static const
-R_CMethodDef cMethods[] = {
-        {"em_normal_partial_concordant", (DL_FUNC) &em_normal_partial_concordant, 16},
-	{"subsampling", (DL_FUNC) &subsampling, 16},
+R_CallMethodDef callMethods[]  = {
+  {"em_normal_partial_concordant", (DL_FUNC) &em_normal_partial_concordant, 16},
+  {"subsampling", (DL_FUNC) &subsampling, 11},
+  {NULL, NULL, 0}
 };
 
-void R_init_myRoutines(DllInfo *info)
-{
-        /* Register the .C and .Call routines.
-        No .Fortran() or .External() routines,
-        so pass those arrays as NULL.
-        */
-        R_registerRoutines(info, cMethods, NULL, NULL, NULL);
+void R_init_discordant(DllInfo *info) {
+  R_registerRoutines(info, NULL, callMethods, NULL, NULL);
+  R_useDynamicSymbols(info, FALSE);
 }
+
