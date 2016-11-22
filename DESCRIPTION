@@ -1,11 +1,11 @@
 Package: discordant
-Version: 0.99.0
+Version: 0.99.1
 Date: 2016-10-21
 Title: The Discordant Method: A Novel Approach for Differential
         Correlation
 Authors@R: c(person("Charlotte", "Siska", role = c("aut", "cre"), email = "charlotte.siska@ucdenver.edu"), person("Katerina", "Kechris", role = c("aut")))
 Author: Charlotte Siska [cre,aut], Katerina Kechris [aut]
-Maintainer: Charlotte Siska <charlotte.siska@ucdenver.edu>
+Maintainer: Charlotte Siska <siska.charlotte@gmail.com>
 Description: Discordant is a method to determine differential correlation of molecular feature pairs from -omics data using mixture models. Algorithm is explained further in Siska et al.
 Encoding: latin1
 biocViews: BiologicalQuestion, StatisticalMethod, mRNAMicroarray,
