@@ -192,7 +192,7 @@ em.normal.partial.concordant <- function(data, class, tol=0.001, restriction=0, 
     tau <- double(g)
     loglik <- double(1)
     convergence <- integer(1)
-    results <- .C("em_normal_partial_concordant", as.double(data[,1]), as.double(data[,2]), as.double(t(zxy)), n, pi, mu, sigma, nu, tau, g, loglik, as.double(tol), as.integer(restriction), as.integer(constrain), as.integer(iteration), convergence)
+    results <- .Call("em_normal_partial_concordant", as.double(data[,1]), as.double(data[,2]), as.double(t(zxy)), n, pi, mu, sigma, nu, tau, g, loglik, as.double(tol), as.integer(restriction), as.integer(constrain), as.integer(iteration), convergence)
     return(list(model="PCD", convergence=results[[16]], pi=t(array(results[[5]],dim=c(g,g))), mu_sigma=rbind(results[[6]], results[[7]]), nu_tau=rbind(results[[8]], results[[9]]), loglik=results[[11]], class=apply(array(results[[3]], dim=c(n,g*g)),1,order,decreasing=TRUE)[1,], z=array(results[[3]], dim=c(n,g*g))))
 }
 
@@ -211,7 +211,7 @@ subSampleData <- function(pdata, class, mu, sigma, nu, tau, pi) {
     zy <- unmap(class[,2])
     zxy <- sapply(1:dim(zx)[1], yl.outer, zx, zy)
 
-    results <- .C("subsampling", as.double(pdata[,1]), as.double(pdata[,2]), as.double(t(zxy)), n, as.double(pi), as.double(mu), as.double(sigma), as.double(nu), as.double(tau), g)
+    results <- .Call("subsampling", as.double(pdata[,1]), as.double(pdata[,2]), as.double(t(zxy)), n, as.double(pi), as.double(mu), as.double(sigma), as.double(nu), as.double(tau), g)
     return(list(pi=t(array(results[[5]],dim=c(g,g))), mu_sigma=rbind(results[[6]], results[[7]]), nu_tau=rbind(results[[8]], results[[9]]), class=apply(array(results[[3]], dim=c(n,g*g)),1,order,decreasing=TRUE)[1,], z=array(results[[3]], dim=c(n,g*g))))
 
 } 
