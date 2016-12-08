@@ -7,6 +7,7 @@
 \usepackage{hyperref}
 \usepackage{amssymb}
 \usepackage[utf8]{inputenc}
+
 \begin{document}
 \title{The Discordant R Package: A Novel Approach to Differential Correlation}
 \author{Charlotte Siska and Katerina Kechris} 
