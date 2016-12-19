@@ -493,5 +493,6 @@ splitMADOutlier <- function(mat, filter0 = TRUE, threshold = 2) {
             index <- c(index,i)
         }
     }
-	return(list(mat.filtered = mat.filtered, index = index))
+    colnames(mat.filtered) = colnames(mat)
+    return(list(mat.filtered = mat.filtered, index = index))
 }
