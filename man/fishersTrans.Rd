@@ -11,7 +11,7 @@ fishersTrans(rho)
 }
 
 \arguments{
-  \item{rho}{Integer or numeric list of Pearson's correlation coefficients}
+  \item{rho}{Integer or numeric vector of Pearson's correlation coefficients}
 }
 
 \value{
@@ -20,6 +20,10 @@ Returns Fisher-transformed correlation coefficients
 
 \references{
 Fisher, R.A. (1915). "Frequency distribution of the values of the correlation coefficient in samples of an indefinitely large population". Biometrika (Biometrika Trust) 10 (4).
+}
+
+\details{
+Fisher's transformation is when correlation coefficients are transformed into a z score. These z scores have an approximately normal distribution.
 }
 
 \examples{

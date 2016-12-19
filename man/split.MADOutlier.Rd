@@ -21,6 +21,10 @@ splitMADOutlier(mat, filter0 = TRUE, threshold = 2)
   \item{index}{Index of features that have no outliers.}
 }
 
+\details{
+The purpose of this function is to determine outliers in non-symmetric distributions. The distribution is split by the median. Outliers are identifed by being however many median absolute deviations (MAD) from either split distribution.
+}
+
 \references{
 Leys C, Klein O, Bernard P and Licata L. "Detecting Outliers: Do Not Use Standard Deviation Around the Mean, Use Absolute Deivation Around the Median." Journal of Experimental Social Psychology, 2013. 49(4), 764-766.
 Magwene, PM, Willis JH, Kelly JK and Siepel A. "The Statistics of Bulk Segregant Analysis Using Next Generation Sequencing." PLoS Computational Biology, 2011. 7(11), e1002255.

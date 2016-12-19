@@ -28,6 +28,10 @@ Siska C, Bowler R and Kechris K. The Discordant Method: A Novel Approach for Dif
 Friedman J and Alm EJ. Inferring Correlation Networks from Genomic Survey Data. (2012) PLoS Computational Biology. 8:9, e1002687.
 }
 
+\details{
+Creates vectors of correlation coefficents based on feature pairs within x or between x and y. The names of the vectors are the feature pairs taken from the rownames in x and y.
+}
+
 \author{
 Charlotte Siska <siska.charlotte@gmail.com>
 }

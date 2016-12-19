@@ -23,10 +23,6 @@ Discordant is an R package that identifies pairs of features that correlate diff
 
 The functions in the Discordant package provide a simple pipeline for intermediate R users to determine differentially correlated pairs. The final output is a table of molecular feature pairs and their respective posterior probabilities. Functions have been written to allow flexibility for users in how they interpret results, which will be discussed further. Currently, the package only supports the comparison between two phenotypic groups (e.g., disease vs control, mutant vs wildtype).
 
-\section{Required packages}
-
-R packages WGCNA, gtools, MASS and tools are required.
-
 \section{Discordant Algorithm}
 
 Discordant is originally derived from the Concordant algorithm written by \cite{lai1, lai2}. It was used to determine concordance between microarrays. We have applied it to determine differential correlation of features between groups \cite{siska1,siska2}.

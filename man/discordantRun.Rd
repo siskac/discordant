@@ -33,6 +33,12 @@ discordantRun(v1, v2, x, y = NULL, transform = TRUE, subsampling = FALSE, subSiz
   \item{loglik}{Final log likelihood}
 }
 
+\details{
+The discordant algorithm is based on a Gaussian mixture model. If there are three components, correlation coefficients are clustered into negative correlations (-), positive correlations (+) and no correlation (0). If there are five components, then there are two more classes for very negative correlation (--) and very positive correlations (++). All possible combinations for these components are made into classes. If there are three components, there are 9 classes. If there are five components, there are 25 classes.
+
+The posterior probabilities for each class are generated and outputted into the value probMatrix. The value probMatrix is a matrix where each column is a class and each row is a feature pair. The values discordPPVector and discordPPMatrix are the summed differential correlation posterior probability for each feature pair. The values classVector and classMatrix are the class with the highest posterior probability for each feature pair.
+}
+
 \references{
  Siska C, Bowler R and Kechris K. The Discordant Method: A Novel Approach for Differential Correlation (2015), Bioinformatics. 32 (5): 690-696.
 Lai Y, Zhang F, Nayak TK, Modarres R, Lee NH and McCaffrey TA. Concordant integrative gene set enrichment analysis of multiple large-scale two-sample expression data sets. (2014) BMC Genomics 15, S6.
