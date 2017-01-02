@@ -1,17 +1,38 @@
 %\VignetteIndexEntry{Discordant}
+%\VignetteKeywords{omics, differential correlation, transcriptomics}
+%\VignettePackage{Discordant}
+%\VignetteEngine{knitr::knitr}
 
 \documentclass[12pt]{article}
-\usepackage{Sweave}
+
 \usepackage{caption}
 \usepackage{cite}
 \usepackage{hyperref}
 \usepackage{amssymb}
 \usepackage[utf8]{inputenc}
 
-\begin{document}
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rmethod}[1]{{\texttt{#1}}}
+\newcommand{\Rfunarg}[1]{{\texttt{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+\newcommand{\Rcode}[1]{{\texttt{#1}}}
+
+\newcommand{\software}[1]{\textsf{#1}}
+\newcommand{\R}{\software{R}}
+\newcommand{\Bioconductor}{\software{Bioconductor}}
+\newcommand{\Discordant}{\Rpackage{Discordant}}
+
 \title{The Discordant R Package: A Novel Approach to Differential Correlation}
 \author{Charlotte Siska and Katerina Kechris} 
+
+\begin{document}
+
 \maketitle
+<<options,echo=FALSE>>=
+options(width=72)
+@
 
 \tableofcontents
 
@@ -22,6 +43,17 @@
 Discordant is an R package that identifies pairs of features that correlate differently between phenotypic groups, with application to -omics datasets. Discordant uses a mixture model that “bins” molecular feature pairs based on their type of coexpression. More information on the algorithm can be found in \cite{siska1, siska2}. The final output are posterior probabilities of differential correlation. This package can be used to determine differential correlation within one –omics dataset or between two –omics datasets (provided that both –omics datasets were taken from the same samples). Also, the type of data can be any type of –omics with normal or non-normal distributions. Some examples are metabolomics, transcriptomic, proteomics, etc. 
 
 The functions in the Discordant package provide a simple pipeline for intermediate R users to determine differentially correlated pairs. The final output is a table of molecular feature pairs and their respective posterior probabilities. Functions have been written to allow flexibility for users in how they interpret results, which will be discussed further. Currently, the package only supports the comparison between two phenotypic groups (e.g., disease vs control, mutant vs wildtype).
+
+The \Rpackage{Discordant} package is available at bioconductor.org and can be downloaded via \Rfunction{bioLite}:
+
+<<biocLite, eval=FALSE>>=
+source("https://bioconductor.org/biocLite.R")
+biocLite("Discordant")
+@
+To use \Rpackage{Discordant}, import into R:
+<<initialize>>=
+library(discordant)
+@
 
 \section{Discordant Algorithm}
 
@@ -51,12 +83,12 @@ After running the EM algorithm, we have 9 posterior probabilities for each molec
 All datasets are originally from the Cancer Genome Atlas (TCGA) and can be found at \href{http://cancergenome.nih.gov/}{http://cancergenome.nih.gov/}.
 
 \begin{description}
-\item{\verb|TCGA_GBM_miRNA_microarray|}{  Data is miRNA expression values from 10 control and 20 tumor samples for a Glioblastoma multiforme (GBM) Agilent miRNA micorarray. The feature size was originally 470, but after features with outliers were filtered out feature size reduces to 331. In this sample dataset, random 10 features are present.}
-\item{\verb|TCGA_GBM_transcript_microarray|}{  Data is transcript (or mRNA) expression values from 10 control and 20 tumor samples in a GBM Agilent 244k micorarray. The feature size was originally 90797, but after features with outliers were filtered out, feature size reduces to 72656. In this sample dataset, 20 random features are present.}
-\item{\verb|TCGA_Breast_miRNASeq|}{  Data is miRNA counts from 15 control and 45 tumor samples in a Breast Cancer Illumina HiSeq miRNASeq. The feature size was originally 212, but after features with outliers were filtered out feature size reduces to 200. In this sample dataset, 100 random features are present.}
-\item{\verb|TCGA_Breast_RNASeq|}{  Data is transcript (or mRNA) counts from 15 control and 45 tumor samples in a Breast Cancer Illumina HiSeq RNASeq. The feature size was originally 19414, but after features with outliers were filtered out feature size reduces to 16656. In this sample dataset, 100 random features are present.}
-\item{\verb|TCGA_Breast_miRNASeq_voom|}{  This dataset is the voom-transformed \verb|TCGA_Breast_miRNASeq|.}
-\item{\verb|TCGA_Breast_RNASeq_vooim|}{  This dataset is the voom-transformed \verb|TCGA_Breast_RNASeq|.}
+\item{\Robject{TCGA\_GBM\_miRNA\_microarray}}{  Data is miRNA expression values from 10 control and 20 tumor samples for a Glioblastoma multiforme (GBM) Agilent miRNA micorarray. The feature size was originally 470, but after features with outliers were filtered out feature size reduces to 331. In this sample dataset, random 10 features are present.}
+\item{\Robject{TCGA\_GBM\_transcript\_microarray}}{  Data is transcript (or mRNA) expression values from 10 control and 20 tumor samples in a GBM Agilent 244k micorarray. The feature size was originally 90797, but after features with outliers were filtered out, feature size reduces to 72656. In this sample dataset, 20 random features are present.}
+\item{\Robject{TCGA\_Breast\_miRNASeq}}{  Data is miRNA counts from 15 control and 45 tumor samples in a Breast Cancer Illumina HiSeq miRNASeq. The feature size was originally 212, but after features with outliers were filtered out feature size reduces to 200. In this sample dataset, 100 random features are present.}
+\item{\Robject{TCGA\_Breast\_RNASeq}}{  Data is transcript (or mRNA) counts from 15 control and 45 tumor samples in a Breast Cancer Illumina HiSeq RNASeq. The feature size was originally 19414, but after features with outliers were filtered out feature size reduces to 16656. In this sample dataset, 100 random features are present.}
+\item{\Robject{TCGA\_Breast\_miRNASeq\_voom}}{  This dataset is the voom-transformed \Robject{TCGA\_Breast\_miRNASeq}.}
+\item{\Robject{TCGA\_Breast\_RNASeq\_voom}}{  This dataset is the voom-transformed \Robject{TCGA\_Breast\_RNASeq}.}
 \end{description}
 
 \section{Before Starting}
@@ -68,24 +100,23 @@ All datasets are originally from the Cancer Genome Atlas (TCGA) and can be found
 "Between" -omics refers to analysis of two -omics datasets. Molecular feature pairs analyzed are between the two -omics, (e.g. transcript-protein, protein-metabolite) are paired.
 
 \begin{description}
-\item[x]{ m by n matrix where m are features and n are samples. If only this matrix is provided, a within -omics analysis is performed.}
-\item[y]{ m by n matrix where m are features and n are samples. This is an optional argument which will induce between -omics analysis. Samples must be matched with those in x.} 
-\item[groups]{ vector containing 1s and 2s that correspond to the location of samples in the columns of x (and y if provided). For example, the control group is group 1 and the experimental group 2, and the location of samples corresponding to the two groups matches the locations of 1s and 2s in the group vector}
+\item{\Robject{x}}{ m by n matrix where m are features and n are samples. If only this matrix is provided, a within -omics analysis is performed.}
+\item{\Robject{y}}{ m by n matrix where m are features and n are samples. This is an optional argument which will induce between -omics analysis. Samples must be matched with those in x.} 
+\item{\Robject{group}}{ vector containing 1s and 2s that correspond to the location of samples in the columns of x (and y if provided). For example, the control group is group 1 and the experimental group 2, and the location of samples corresponding to the two groups matches the locations of 1s and 2s in the group vector}
 \end{description}
 
 \subsection{Outliers}
 
-In our work, we found that features with outliers would skew correlation and cause false positives. Our approach was to filter out features that had large outliers. With normal data, such as in microarrays, Grubbs' test can be used. The null hypothesis is that there are no outliers in the data, and so features with p-value $\ge$ 0.05 are kept. A simple R function is found in the \verb|outliers| R package as \verb|grubbs.test|.
+In our work, we found that features with outliers would skew correlation and cause false positives. Our approach was to filter out features that had large outliers. With normal data, such as in microarrays, Grubbs' test can be used. The null hypothesis is that there are no outliers in the data, and so features with p-value $\ge$ 0.05 are kept. A simple R function is found in the \Rpackage{outliers} R package as \Rfunction{grubbs.test}.
 
 Determining outliers in non-normal data is more complicated. We used the median absolute deviation (MAD). Normally, features are filtered if they are outside 2 or 3 MADs from the median \cite{leys}. This is not completely applicable to sequencing data, because sequencing data has large variance and a non-symmetrical distribution. We used 'split MAD', which has been used before \cite{magwene}. A left MAD is determined based on data left to the median and a right MAD is determined based on data to the right of the median. If there are any feature outside a factor of the left or right MAD from the median, there are featured out.
 
-A function in Discordant is provided called \verb|split.madOutlier|. The number of MAD outside of the median can be changed with option \verb|threshold|. Another option is \verb|filter0| which if \verb|TRUE| will filter out any feature with at least one 0. Arguments returned are \verb|mat.filtered|, which is the filtered matrix and \verb|index| which is the index of features that are retained in \verb|mat.filtered|.
+A function in Discordant is provided called \Rfunction{split.madOutlier}. The number of MAD outside of the median can be changed with option \Robject{threshold}. Another option is \Robject{filter0} which if \Robject{TRUE} will filter out any feature with at least one 0. Arguments returned are \Robject{mat.filtered}, which is the filtered matrix and \Robject{index} which is the index of features that are retained in \Robject{mat.filtered}.
 
-\begin{verbatim}
-> data(TCGA_Breast_miRNASeq)
-> mat.filtered <- splitMADOutlier(TCGA_Breast_miRNASeq,
-+       filter0 = TRUE, threshold = 4)
-\end{verbatim}
+<<runOutliers, eval=FALSE>>=
+data(TCGA_Breast_miRNASeq)
+mat.filtered <- splitMADOutlier(TCGA_Breast_miRNASeq,filter0 = TRUE, threshold = 4)
+@
 
 \section{Create Correlation Vectors}
 
@@ -97,195 +128,71 @@ To run the Discordant algorithm, correlation vectors respective to each group ar
 \item[v2]{Correlation vector of molecular feature pairs corresponding to samples labeled 2 in group parameter.}
 \end{description}
 
-\begin{verbatim}
-
-> data(TCGA_GBM_miRNA_microarray)
-> data(TCGA_GBM_transcript_microarray)
-> groups <- c(rep(1,10), rep(2,10))
+<<createVectors>>=
+data(TCGA_GBM_miRNA_microarray)
+data(TCGA_GBM_transcript_microarray)
+groups <- c(rep(1,10), rep(2,10))
 
 #Within -Omics
-> wthn_vectors <- createVectors(TCGA_GBM_transcript_microarray, 
-+      groups = groups)
+wthn_vectors <- createVectors(TCGA_GBM_transcript_microarray, groups = groups)
 #Between -Omics
-> btwn_vectors <- createVectors(TCGA_GBM_miRNA_microarray, 
-+      TCGA_GBM_transcript_microarray, groups = groups)
-\end{verbatim}
+btwn_vectors <- createVectors(TCGA_GBM_miRNA_microarray, TCGA_GBM_transcript_microarray, groups = groups)
+@
 
 \subsection{Correlation Metric}
 
-We also have included different options for correlation metrics. This argument is called $\verb|cor.method|$ and its default value is $\verb|"spearman"|$. Other options are $\verb|"pearson"|$, $\verb|"bwmc"|$ and $\verb|"sparcc"|$. For information and comparison of Spearman, Pearson and biweight midcorrelation (bwmc) please read this paper by \href{http://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-13-328}{Song et al}\cite{song}. We have also investigated correlation metrics in Discordant in relation to sequencing data, and found Spearman's correlation had the best performance\cite{siska2}.
+We also have included different options for correlation metrics. This argument is called \Robject{cor.method} and its default value is "spearman." Other options are "pearson," "bwmc" and "sparcc". For information and comparison of Spearman, Pearson and biweight midcorrelation (bwmc) please read this paper by \href{http://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-13-328}{Song et al}\cite{song}. We have also investigated correlation metrics in Discordant in relation to sequencing data, and found Spearman's correlation had the best performance\cite{siska2}.
 
 The algorithm for SparCC was introduced by Friedman et al\cite{friedman}. We use R code written by Huaying Fang\cite{fang} .
 
-Example
-
-\begin{verbatim}
-
-> data(TCGA_GBM_miRNA_microarray)
-> data(TCGA_GBM_transcript_microarray)
-> groups <- c(rep(1,10), rep(2,10))
-
-#Within -Omics
-> wthn_vectors <- createVectors(TCGA_GBM_transcript_microarray, 
-+      groups = groups, cor.method = c("bwmc"))
-#Between -Omics
-> btwn_vectors <- createVectors(TCGA_GBM_miRNA_microarray, 
-+      TCGA_GBM_transcript_microarray, groups = groups,
-+      cor.method = c("bwmc"))
-
-\end{verbatim}
-
 \section{Run the Discordant Algorithm}
 
-The Discordant Algorithm is implemented in the the function $\verb|discordantRun|$ which requires two correlation vectors and the original data. If the user wishes to generate their own correlation vector before inputting into the dataset, they can do so. However, the function will return an error message if the dimensions of the datasets inserted do not match the correlation vector.
+The Discordant Algorithm is implemented in the the function \Rfunction{discordantRun} which requires two correlation vectors and the original data. If the user wishes to generate their own correlation vector before inputting into the dataset, they can do so. However, the function will return an error message if the dimensions of the datasets inserted do not match the correlation vector.
 
-The posterior probability output of the Discordant algorithm are the differential correlation posterior probabilities (the sum of the off-diagonal of the class matrix described in Table 1). If the user wishes to observe more detailed information, alternative outputs are available. $\verb|discordantRun|$ has five outputs:
+The posterior probability output of the Discordant algorithm are the differential correlation posterior probabilities (the sum of the off-diagonal of the class matrix described in Table 1). If the user wishes to observe more detailed information, alternative outputs are available. \Rfunction{discordantRun} has five outputs:
 
 \begin{description}
-\item[discordPPMatrix]{Matrix of differential correlation posterior probabilities where rows and columns reflect features. If only x was inputted, then the number of rows and columns are number of features in x. The rows and column names are the feature names, and the upper diagonal of the matrix are NAs to avoid repeating results. If x and y are inputted, the number of rows is the feature size of x and the number of columns the feature size of y. The row names are features from x and the column names are features from y.}
-\item[discordPPVector]{Vector of differential correlation posterior probabilities. The length is the number of feature pairs. The names of the vector are the feature pairs.}
-\item[classMatrix]{Matrix of classes with the highest posterior probability. Row and column names are the same as in discordPPMatrix depending if only x is inputted or both x and y.}
-\item[classVector]{Vector of class with the highest posterior probability for each pair. The length is the number of feature pairs. Names of vector correspond to the feature pairs, similar to discordPPVector.}
-\item[probMatrix]{Matrix of all posterior probabilities, where the number of rows is the number of feature pairs and the columns represent the class within the class matrix. The number of columns can be 9 or 25, depending on how many mixture components are chosen (discussed later). The values across each row add up to 1. Posterior probabilities in discordPPMatrix and discordPPVector are the summation of columns that correspond to differential correlation classes (Table 1).}
-\item[loglik]{The log likelihood.}
+\item{\Robject{discordPPMatrix}}{Matrix of differential correlation posterior probabilities where rows and columns reflect features. If only x was inputted, then the number of rows and columns are number of features in x. The rows and column names are the feature names, and the upper diagonal of the matrix are NAs to avoid repeating results. If x and y are inputted, the number of rows is the feature size of x and the number of columns the feature size of y. The row names are features from x and the column names are features from y.}
+\item{\Robject{discordPPVector}}{Vector of differential correlation posterior probabilities. The length is the number of feature pairs. The names of the vector are the feature pairs.}
+\item{\Robject{classMatrix}}{Matrix of classes with the highest posterior probability. Row and column names are the same as in discordPPMatrix depending if only x is inputted or both x and y.}
+\item{\Robject{classVector}}{Vector of class with the highest posterior probability for each pair. The length is the number of feature pairs. Names of vector correspond to the feature pairs, similar to discordPPVector.}
+\item{\Robject{probMatrix}}{Matrix of all posterior probabilities, where the number of rows is the number of feature pairs and the columns represent the class within the class matrix. The number of columns can be 9 or 25, depending on how many mixture components are chosen (discussed later). The values across each row add up to 1. Posterior probabilities in discordPPMatrix and discordPPVector are the summation of columns that correspond to differential correlation classes (Table 1).}
+\item{\Robject{loglik}}{The log likelihood.}
 \end{description}
 
-\begin{verbatim}
-> data(TCGA_GBM_miRNA_microarray)
-> data(TCGA_GBM_transcript_microarray)
-> groups <- c(rep(1,10), rep(2,10))
+<<discordant>>=
+data(TCGA_GBM_miRNA_microarray)
+data(TCGA_GBM_transcript_microarray)
+groups <- c(rep(1,10), rep(2,10))
 
 #Within -omics
-> wthn_vectors <- createVectors(TCGA_GBM_transcript_microarray, 
-+      groups = groups)
-> wthn_result <- discordantRun(vectors$v1, vectors$v2, 
-+      TCGA_GBM_transcript_microarray)
-> wthn_result$discordPPMatrix[1:4,1:4]
-             A_23_P138644 A_23_P24296 A_24_P345312 A_24_P571870
-A_23_P138644           NA          NA           NA           NA
-A_23_P24296    0.33050233          NA           NA           NA
-A_24_P345312   0.24910061  0.47858580           NA           NA
-A_24_P571870   0.07052135  0.23310301   0.07028103           NA
-> head(wthn_result$discordPPVector)
-A_23_P24296_A_23_P138644 A_24_P345312_A_23_P138644 
-               0.33050233                0.24910061 
-A_24_P345312_A_23_P24296 A_24_P571870_A_23_P138644
-               0.44839316                0.07052135
-A_24_P571870_A_23_P24296 A_24_P571870_A_24_P345312 
-               0.56846815                0.91395405 
-> wthn_result$classMatrix[1:4,1:4]
-             A_23_P138644 A_23_P24296 A_24_P345312 A_24_P571870
-A_23_P138644           NA          NA           NA           NA
-A_23_P24296             1          NA           NA           NA
-A_24_P345312            1           3           NA           NA
-A_24_P571870            1           1            1           NA
-> head(wthn_result$classVector)
-A_23_P24296_A_23_P138644 A_24_P345312_A_23_P138644 
-                        1                         1
-A_24_P345312_A_23_P24296 A_24_P571870_A_23_P138644
-                        1                         1  
-A_24_P571870_A_23_P24296 A_24_P571870_A_24_P345312 
-                        4                         2
-> head(wthn_result$probMatrix)
-                                   1            2           3
-A_23_P24296_A_23_P138644  0.63574038 5.223996e-07 0.289699897
-A_24_P345312_A_23_P138644 0.74859348 2.151027e-02 0.012949903
-A_24_P345312_A_23_P24296  0.92584634 4.666010e-03 0.022843630
-A_24_P571870_A_23_P138644 0.55002415 1.359646e-03 0.016168496
-A_24_P571870_A_23_P24296  0.43013074 5.668452e-04 0.014985341
-A_24_P571870_A_24_P345312 0.05392322 8.877314e-01 0.001065886
-                                   4            5           6
-A_23_P24296_A_23_P138644  0.01293366 2.138702e-09 7.37399e-03
-A_24_P345312_A_23_P138644 0.19191496 1.124351e-03 4.15700e-03
-A_24_P345312_A_23_P24296  0.00260480 2.636222e-06 8.20242e-05
-A_24_P571870_A_23_P138644 0.40351609 2.017512e-04 1.47538e-02
-A_24_P571870_A_23_P24296  0.52075349 1.377220e-04 2.24260e-02
-A_24_P571870_A_24_P345312 0.00961640 3.201954e-02 2.38872e-04
-                                   7            8           9
-A_23_P24296_A_23_P138644  0.02049424 1.062232e-08 0.033757287
-A_24_P345312_A_23_P138644 0.01824136 3.271036e-04 0.001181551
-A_24_P345312_A_23_P24296  0.04019691 1.279636e-04 0.003629672
-A_24_P571870_A_23_P138644 0.01257563 1.944655e-05 0.001380934
-A_24_P571870_A_23_P24296  0.00972846 7.995730e-06 0.001263389
-A_24_P571870_A_24_P345312 0.00138369 1.391785e-02 0.000103189
-> wthn_result$loglik
-[1] 1129.558
-> # Between -omics
-> btwn_vectors <- createVectors(TCGA_GBM_miRNA_microarray, 
-+      TCGA_GBM_transcript_microarray, groups = groups)
-> btwn_result <- discordantRun(vectors$v1, vectors$v2, 
-+       TCGA_GBM_miRNA_microarray, 
-+       TCGA_GBM_transcript_microarray)
-> btwn_result$discordPPMatrix[1:3,1:3]
-               A_23_P138644 A_23_P24296 A_24_P345312
-hsa-miR-19b-5p    0.9734173  0.19568366   0.70425484
-hsa-miR-206-5p    0.8422418  0.03809339   0.91989561
-hsa-miR-369-5p    0.9509883  0.05088263   0.99194855
-> head(btwn_result$discordPPVector)
-hsa-miR-19b-5p_A_23_P138644  hsa-miR-19b-5p_A_23_P24296 
-                  0.9734173                   0.8422418 
-hsa-miR-19b-5p_A_24_P345312 hsa-miR-19b-5p_A_24_P571870 
-                  0.9509883                   0.8983236 
- hsa-miR-19b-5p_A_32_P71885  hsa-miR-19b-5p_A_32_P82889 
-                  0.9154871                   0.6706972
-> btwn_result$classMatrix[1:3,1:3] 
-               A_23_P138644 A_23_P24296 A_24_P345312
-hsa-miR-19b-5p            7           1            4
-hsa-miR-206-5p            2           1            3
-hsa-miR-369-5p            4           1            2
-> head(btwn_result$classVector)
-hsa-miR-19b-5p_A_23_P138644  hsa-miR-19b-5p_A_23_P24296 
-                          7                           2 
-hsa-miR-19b-5p_A_24_P345312 hsa-miR-19b-5p_A_24_P571870 
-                          4                           7 
- hsa-miR-19b-5p_A_32_P71885  hsa-miR-19b-5p_A_32_P82889 
-                          4                           4 
-> head(btwn_result$probMatrix)
-                                    1          2          3
-hsa-miR-19b-5p_A_23_P138644 0.0265823 1.6948e-02 7.4477e-09
-hsa-miR-19b-5p_A_23_P24296  0.1575141 8.3361e-01 2.2858e-10
-hsa-miR-19b-5p_A_24_P345312 0.0488204 2.8058e-05 1.1427e-03
-hsa-miR-19b-5p_A_24_P571870 0.1016756 4.2631e-02 7.0747e-08
-hsa-miR-19b-5p_A_32_P71885  0.0844775 3.4488e-06 2.7536e-02
-hsa-miR-19b-5p_A_32_P82889  0.2333993 1.1262e-01 1.1956e-07
-                                     4           5        6
-hsa-miR-19b-5p_A_23_P138644 1.2909e-11 2.82374e-12 2.26e-19
-hsa-miR-19b-5p_A_23_P24296  1.3327e-04 2.44029e-04 1.21e-14
-hsa-miR-19b-5p_A_24_P345312 9.4829e-01 1.90403e-04 1.50e-03
-hsa-miR-19b-5p_A_24_P571870 7.6664e-10 1.10858e-10 3.34e-17
-hsa-miR-19b-5p_A_32_P71885  8.6805e-01 1.23439e-05 1.98e-02
-hsa-miR-19b-5p_A_32_P82889  5.5782e-01 9.59033e-02 1.80e-08
-                                     7           8        9
-hsa-miR-19b-5p_A_23_P138644 8.4389e-01 1.12569e-01 3.33e-07
-hsa-miR-19b-5p_A_23_P24296  4.1233e-03 4.37311e-03 8.73e-12
-hsa-miR-19b-5p_A_24_P345312 2.3763e-05 2.67832e-09 8.07e-07
-hsa-miR-19b-5p_A_24_P571870 7.8738e-01 6.83115e-02 7.76e-07
-hsa-miR-19b-5p_A_32_P71885  4.9158e-05 3.95251e-10 2.30e-05
-hsa-miR-19b-5p_A_32_P82889  2.1812e-04 2.06579e-05 1.65e-10
-> btwn_result$loglik
-[1] 1169.986
-\end{verbatim}
+wthn_vectors <- createVectors(TCGA_GBM_transcript_microarray, groups = groups)
+wthn_result <- discordantRun(wthn_vectors$v1, wthn_vectors$v2, TCGA_GBM_transcript_microarray)
+wthn_result$discordPPMatrix[1:4,1:4]
+head(wthn_result$discordPPVector)
+wthn_result$classMatrix[1:4,1:4]
+head(wthn_result$classVector)
+head(wthn_result$probMatrix)
+wthn_result$loglik
+
+# Between -omics
+btwn_vectors <- createVectors(TCGA_GBM_miRNA_microarray, TCGA_GBM_transcript_microarray, groups = groups)
+btwn_result <- discordantRun(btwn_vectors$v1, btwn_vectors$v2, TCGA_GBM_miRNA_microarray, TCGA_GBM_transcript_microarray)
+btwn_result$discordPPMatrix[1:3,1:3]
+head(btwn_result$discordPPVector)
+btwn_result$classMatrix[1:3,1:3] 
+head(btwn_result$classVector)
+head(btwn_result$probMatrix)
+btwn_result$loglik
+@
 
 \subsection{Subsampling}
 
 Subsampling is an option to run the EM algorithm with a random sample of independent feature pairs. This is repeated for a number of samplings, and then the average of these parameters are used to maximize posterior probabilities for all feature pairs. This option was introduced to speed up Discordant method and to also address the independence assumption. There are some implementation issues which are explained in Siska et al, submitted\cite{siska2}.
 
-The argument $\verb|subsampling|$ must be set to $\verb|TRUE|$ for subsampling to be used. The number of independent feature pairs to be subsampled is determined by the argument $\verb|subSize|$ whose default value is the number of rows in $\verb|x|$. The number of independent feature pairs must be less or equal to the number of features in $\verb|x|$ and $\verb|y|$. The number of random samplings to be run is set by the argument $\verb|iter|$, whose default value is 100.
+The argument \Robject{subsampling} must be set to TRUE for subsampling to be used. The number of independent feature pairs to be subsampled is determined by the argument \Robject{subSize} whose default value is the number of rows in \Robject{x}. The number of independent feature pairs must be less or equal to the number of features in \Robject{x} and \Robject{y}. The number of random samplings to be run is set by the argument \Robject{iter}, whose default value is 100.
 
 For the subsampling example, we will use the sequencing data. The sequencing data has a greater feature size than the microarray data. A dataset with small feature size will cause a segmentation fault with subsampling because not enough feature pairs are being used to estimate parameters in the mixture model.
-
-\begin{verbatim}
-> data(TCGA_Breast_miRNASeq)
-> data(TCGA_Breast_RNASeq)
-> groups <- c(rep(1,10), rep(2,10))
-
-> vectors <- createVectors(TCGA_Breast_miRNASeq, 
-+      TCGA_Breast_RNASeq, groups = groups)
-> result <- discordantRun(vectors$v1, vectors$v2, 
-+      TCGA_Breast_miRNASeq, 
-+      TCGA_Breast_RNASeq, subsampling = TRUE, 
-+      iter = 200, subSize = 20)
-\end{verbatim}
 
 \begin{table}[h]
 \begin{center}
@@ -306,44 +213,25 @@ For the subsampling example, we will use the sequencing data. The sequencing dat
 
 We also provide the option to increase component size from three to five in the mixture model. The number of classes in the class matrix increases, as seen in Table 2. Incorporating the extra components means that it is possible to identify elevated differential correlation, which is when there are associations in both groups in the same direction but one is more extreme. Using this options introduces more parameters, which does have an effect on run-time. We also found that using the five mixture component mixture model reduces performance compared to the three component mixture model\cite{siska2}. However, the option is available if users wish to explore more types of differential correlation.
 
-The default is to run the three component mixture model and can be changed with option $\verb|components|$.
-
-Example:
-
-\begin{verbatim}
-> data(TCGA_GBM_miRNA_microarray)
-> data(TCGA_GBM_transcript_microarray)
-> groups <- c(rep(1,10), rep(2,10))
-
-> btwn_vectors <- createVectors(TCGA_GBM_miRNA_microarray, 
-+      TCGA_GBM_transcript_microarray, groups = groups)
-> bwtn_result <- discordantRun(vectors$v1, vectors$v2, 
-+      TCGA_GBM_transcript_microarray, 
-+      TCGA_GBM_miRNA_microarray, components = 5)
-\end{verbatim}
+The default is to run the three component mixture model and can be changed with option \Robject{components}.
 
 \section{Example Run with Microarrays}
 
-\begin{verbatim}
+<<microarrays>>=
 data(TCGA_GBM_miRNA_microarray)
 data(TCGA_GBM_transcript_microarray)
 groups <- c(rep(1,10), rep(2,10))
 
 #Within -Omics
 
-> wthn_vectors <- createVectors(TCGA_GBM_transcript_microarray, 
-+     groups = groups)
-> wthn_result <- discordantRun(vectors$v1, vectors$v2, 
-+     TCGA_GBM_transcript_microarray)
+wthn_vectors <- createVectors(TCGA_GBM_transcript_microarray, groups = groups)
+wthn_result <- discordantRun(wthn_vectors$v1, wthn_vectors$v2, TCGA_GBM_transcript_microarray)
 
 #Between -Omics
 
-> btwn_vectors <- createVectors(TCGA_GBM_miRNA_microarray, 
-+     TCGA_GBM_transcript_microarray, groups = groups)
-> btwn_result <- discordantRun(vectors$v1, vectors$v2, 
-+     TCGA_GBM_miRNA_microarray, 
-+     TCGA_GBM_transcript_microarray)
-\end{verbatim}
+btwn_vectors <- createVectors(TCGA_GBM_miRNA_microarray, TCGA_GBM_transcript_microarray, groups = groups)
+btwn_result <- discordantRun(btwn_vectors$v1, btwn_vectors$v2, TCGA_GBM_miRNA_microarray, TCGA_GBM_transcript_microarray)
+@
 
 \bibliographystyle{ieeetr}
 
