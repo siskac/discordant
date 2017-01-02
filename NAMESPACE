@@ -5,5 +5,6 @@ import(gtools)
 import(biwt)
 import(tools)
 import(stats)
+import(Biobase)
 
 export(createVectors, discordantRun, fishersTrans, splitMADOutlier)

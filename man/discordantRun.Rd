@@ -15,8 +15,8 @@ discordantRun(v1, v2, x, y = NULL, transform = TRUE, subsampling = FALSE, subSiz
 \arguments{
   \item{v1}{Vector of Pearson correlation coefficients in group 1}
   \item{v2}{Vector of Pearson correlation coefficients in group 2}
-  \item{x}{m by n matrix where m are features and n samples}
-  \item{y}{optional second m by n matrix, induces dual -omics analysis}
+  \item{x}{ExpressionSet of -omics data}
+  \item{y}{ExpressionSet of -omics data, induces dual -omics analysis}
   \item{transform}{If TRUE v1 and v2 will be Fisher transformed}
   \item{subsampling}{If TRUE subsampling will be run}
   \item{subSize}{Indicates how many feature pairs to be used for subsampling. Default is the feature size in x}

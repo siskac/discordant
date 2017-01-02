@@ -1,5 +1,5 @@
 Package: discordant
-Version: 0.99.5
+Version: 0.99.6
 Date: 2016-10-21
 Title: The Discordant Method: A Novel Approach for Differential Correlation
 Authors@R: c(person("Charlotte", "Siska", role = c("aut", "cre"), email = "charlotte.siska@ucdenver.edu"), person("Katerina", "Kechris", role = c("aut")))

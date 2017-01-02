@@ -12,8 +12,8 @@ createVectors(x, y = NULL, groups, cor.method = c("spearman"))
 }
 
 \arguments{
-  \item{x}{m by n matrix where m are features and n are samples}
-  \item{y}{optional second m by n matrix, induces dual -omics analysis}
+  \item{x}{ExpressionSet of -omics data}
+  \item{y}{optional second ExpressionSet of -omics data, induces dual -omics analysis}
   \item{groups}{n-length vector of 1s and 2s matching samples belonging to groups 1 and 2}
   \item{cor.method}{correlation method to measure association. Options are "spearman", "pearson", "bwmc" and "sparcc"}
 }
@@ -29,7 +29,7 @@ Friedman J and Alm EJ. Inferring Correlation Networks from Genomic Survey Data. 
 }
 
 \details{
-Creates vectors of correlation coefficents based on feature pairs within x or between x and y. The names of the vectors are the feature pairs taken from the rownames in x and y.
+Creates vectors of correlation coefficents based on feature pairs within x or between x and y. The names of the vectors are the feature pairs taken from x and y.
 }
 
 \author{
