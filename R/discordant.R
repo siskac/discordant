@@ -170,7 +170,8 @@ unmap <- function(classification){
 }
 
 
-em.normal.partial.concordant <- function(data, class, tol=0.001, restriction=0, constrain=0, iteration=1000){
+em.normal.partial.concordant <- function(data, class, tol=0.001, restriction=0, 
+    constrain=0, iteration=1000){
     n <- as.integer(dim(data)[1])
     g <- as.integer(nlevels(as.factor(class)))
 
@@ -192,8 +193,15 @@ em.normal.partial.concordant <- function(data, class, tol=0.001, restriction=0, 
     tau <- double(g)
     loglik <- double(1)
     convergence <- integer(1)
-    results <- .C("em_normal_partial_concordant", as.double(data[,1]), as.double(data[,2]), as.double(t(zxy)), n, pi, mu, sigma, nu, tau, g, loglik, as.double(tol), as.integer(restriction), as.integer(constrain), as.integer(iteration), convergence)
-    return(list(model="PCD", convergence=results[[16]], pi=t(array(results[[5]],dim=c(g,g))), mu_sigma=rbind(results[[6]], results[[7]]), nu_tau=rbind(results[[8]], results[[9]]), loglik=results[[11]], class=apply(array(results[[3]], dim=c(n,g*g)),1,order,decreasing=TRUE)[1,], z=array(results[[3]], dim=c(n,g*g))))
+    results <- .C("em_normal_partial_concordant", as.double(data[,1]), 
+        as.double(data[,2]), as.double(t(zxy)), n, pi, mu, sigma, nu, tau, g, loglik,
+        as.double(tol), as.integer(restriction), as.integer(constrain), 
+        as.integer(iteration), convergence)
+    return(list(model="PCD", convergence=results[[16]], pi=t(array(results[[5]],
+        dim=c(g,g))), mu_sigma=rbind(results[[6]], results[[7]]), 
+        nu_tau=rbind(results[[8]], results[[9]]), loglik=results[[11]], 
+        class=apply(array(results[[3]], dim=c(n,g*g)),1,order,decreasing=TRUE)[1,], 
+        z=array(results[[3]], dim=c(n,g*g))))
 }
 
 subSampleData <- function(pdata, class, mu, sigma, nu, tau, pi) {
@@ -211,8 +219,13 @@ subSampleData <- function(pdata, class, mu, sigma, nu, tau, pi) {
     zy <- unmap(class[,2])
     zxy <- sapply(1:dim(zx)[1], yl.outer, zx, zy)
 
-    results <- .C("subsampling", as.double(pdata[,1]), as.double(pdata[,2]), as.double(t(zxy)), n, as.double(pi), as.double(mu), as.double(sigma), as.double(nu), as.double(tau), g)
-    return(list(pi=t(array(results[[5]],dim=c(g,g))), mu_sigma=rbind(results[[6]], results[[7]]), nu_tau=rbind(results[[8]], results[[9]]), class=apply(array(results[[3]], dim=c(n,g*g)),1,order,decreasing=TRUE)[1,], z=array(results[[3]], dim=c(n,g*g))))
+    results <- .C("subsampling", as.double(pdata[,1]), as.double(pdata[,2]), 
+        as.double(t(zxy)), n, as.double(pi), as.double(mu), as.double(sigma), 
+        as.double(nu), as.double(tau), g)
+    return(list(pi=t(array(results[[5]],dim=c(g,g))), mu_sigma=rbind(results[[6]], 
+        results[[7]]), nu_tau=rbind(results[[8]], results[[9]]), 
+        class=apply(array(results[[3]], dim=c(n,g*g)),1,order,decreasing=TRUE)[1,], 
+        z=array(results[[3]], dim=c(n,g*g))))
 
 } 
 
@@ -242,7 +255,8 @@ getNames <- function(x, y = NULL) {
             outputRow <- temp[i,]
             index <- which(is.na(outputRow) == FALSE)
             if(length(index) > 0) {
-                tempMatrix <- cbind(rep(rownames(x)[i],length(index)), rownames(x)[index])
+                tempMatrix <- cbind(rep(rownames(x)[i],length(index)), 
+                    rownames(x)[index])
                 namesMatrix <- rbind(namesMatrix, tempMatrix)
             }
         }
@@ -252,7 +266,26 @@ getNames <- function(x, y = NULL) {
     return(vector_names)
 }
 
+checkInputs <- function(x,y,groups = NULL) {
+    issue = FALSE
+    if(is.null(groups) == FALSE  && unique(unique(groups) != c(1,2))) {
+        print("groups vector must consist of 1s and 2s corresponding to first and 
+            second group.")
+        issue = TRUE
+    }
+    if(mode(x) != "S4" || (is.null(y) == FALSE && mode(y) != "S4")) {
+        print("data matrices x and/or y must be type ExpressionSet")
+        issue = TRUE
+    }
+    return(issue)
+}
+
 createVectors <- function(x, y = NULL, groups, cor.method = c("spearman")) {
+
+    if(checkInputs(x,y,groups)) {
+        stop("Please fix inputs.")
+    }
+
     index1 <- which(groups == 1)
     index2 <- which(groups == 2)
 
@@ -261,7 +294,10 @@ createVectors <- function(x, y = NULL, groups, cor.method = c("spearman")) {
         stop("Please enter spearman, pearson, bwmc or sparcc for correlation metric.")
     }
 
+    x <- exprs(x)
+
     if(is.null(y) == FALSE) {
+        y <- exprs(y)
         data <- rbind(x, y)
         data1 <- data[,index1]
         data2 <- data[,index2]
@@ -320,10 +356,16 @@ createVectors <- function(x, y = NULL, groups, cor.method = c("spearman")) {
     return(list(v1 = statVector1, v2 = statVector2))
 }
 
-discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE, subsampling = FALSE, subSize = dim(x)[1], iter = 100, components = 3) {
+discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE, subsampling = FALSE, 
+    subSize = dim(x)[1], iter = 100, components = 3) {
+
+    if(checkInputs(x,y)) {
+        stop("Please fix inputs.")
+    }
 
     if(transform == TRUE) {
-        if(range(v1)[1] < -1 || range(v1)[2] > 1 || range(v2)[1] < -1 || range(v2)[2] > 1) {
+        if(range(v1)[1] < -1 || range(v1)[2] > 1 || range(v2)[1] < -1 || 
+            range(v2)[2] > 1) {
             stop("correlation vectors have values less than -1 and/or greater than 1.")
         }
         v1 <- fishersTrans(v1)
@@ -403,7 +445,8 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE, subsampling = F
                 sub.class[pdata[,2]>0+(2*param2),2] <- 4
                 sub.class[pdata[,2]<0-(2*param2),2] <- 3
             }
-            pd <- em.normal.partial.concordant(sub.pdata, sub.class, tol=0.001, restriction=0, constrain=c(0,-sd(pdata),sd(pdata)), iteration=1000)
+            pd <- em.normal.partial.concordant(sub.pdata, sub.class, tol=0.001, 
+                restriction=0, constrain=c(0,-sd(pdata),sd(pdata)), iteration=1000)
             total_mu <- total_mu + pd$mu_sigma[1,]
             total_sigma <- total_sigma + pd$mu_sigma[2,]
             total_nu <- total_nu + pd$nu_tau[1,]
@@ -421,7 +464,8 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE, subsampling = F
         zTable <- finalResult$z
         classVector <- finalResult$class
     } else {
-        pd <- em.normal.partial.concordant(pdata, class, tol=0.001, restriction=0, constrain=c(0,-sd(pdata),sd(pdata)), iteration=1000)
+        pd <- em.normal.partial.concordant(pdata, class, tol=0.001, restriction=0, 
+            constrain=c(0,-sd(pdata),sd(pdata)), iteration=1000)
         zTable <- pd$z
         classVector <- pd$class
     }
@@ -459,13 +503,16 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE, subsampling = F
     zTable <- t(apply(zTable, 1, function(x) x/sum(x)))
     rownames(zTable) <- vector_names
 
-    return(list(discordPPMatrix = discordPPMatrix, discordPPVector = discordPPV, classMatrix = classMatrix, classVector = classVector, probMatrix = zTable, loglik = pd$loglik))
+    return(list(discordPPMatrix = discordPPMatrix, discordPPVector = discordPPV, 
+        classMatrix = classMatrix, classVector = classVector, probMatrix = zTable, 
+        loglik = pd$loglik))
 }
 
 splitMADOutlier <- function(mat, filter0 = TRUE, threshold = 2) {
-    if(is.matrix(mat) == FALSE) {
-        mat <- as.matrix(mat)
+    if(mode(mat) != "S4") {
+        stop("data matrix mat must be type ExpressionSet")
     }
+    mat <- exprs(mat)
     maxMAD <- c()
     mat.filtered <- NULL
     index <- c()

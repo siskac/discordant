@@ -1,5 +1,5 @@
 Package: discordant
-Version: 0.99.5
+Version: 0.99.6
 Date: 2016-10-21
 Title: The Discordant Method: A Novel Approach for Differential
         Correlation
@@ -10,8 +10,10 @@ Description: Discordant is a method to determine differential correlation of mol
 Encoding: latin1
 biocViews: BiologicalQuestion, StatisticalMethod, mRNAMicroarray,
         Microarray, Genetics, RNASeq
-Imports: stats, biwt, gtools, MASS, tools
+Suggests: BiocStyle, knitr
+Imports: Biobase, stats, biwt, gtools, MASS, tools
 License: GPL (>= 2)
 URL: https://github.com/siskac/discordant
 NeedsCompilation: yes
+VignetteBuilder: knitr
 Packaged: 2016-10-23 17:49:47 UTC; siskac
