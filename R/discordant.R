@@ -171,7 +171,7 @@ unmap <- function(classification){
 
 
 em.normal.partial.concordant <- function(data, class, tol=0.001, restriction=0, 
-    constrain=0, iteration=1000){
+constrain=0, iteration=1000){
     n <- as.integer(dim(data)[1])
     g <- as.integer(nlevels(as.factor(class)))
 
@@ -194,8 +194,8 @@ em.normal.partial.concordant <- function(data, class, tol=0.001, restriction=0,
     loglik <- double(1)
     convergence <- integer(1)
     results <- .C("em_normal_partial_concordant", as.double(data[,1]), 
-        as.double(data[,2]), as.double(t(zxy)), n, pi, mu, sigma, nu, tau, g, loglik,
-        as.double(tol), as.integer(restriction), as.integer(constrain), 
+        as.double(data[,2]), as.double(t(zxy)), n, pi, mu, sigma, nu, tau, g, 
+        loglik, as.double(tol), as.integer(restriction), as.integer(constrain), 
         as.integer(iteration), convergence)
     return(list(model="PCD", convergence=results[[16]], pi=t(array(results[[5]],
         dim=c(g,g))), mu_sigma=rbind(results[[6]], results[[7]]), 
@@ -226,7 +226,6 @@ subSampleData <- function(pdata, class, mu, sigma, nu, tau, pi) {
         results[[7]]), nu_tau=rbind(results[[8]], results[[9]]), 
         class=apply(array(results[[3]], dim=c(n,g*g)),1,order,decreasing=TRUE)[1,], 
         z=array(results[[3]], dim=c(n,g*g))))
-
 } 
 
 fishersTrans <- function(rho) {
@@ -281,7 +280,6 @@ checkInputs <- function(x,y,groups = NULL) {
 }
 
 createVectors <- function(x, y = NULL, groups, cor.method = c("spearman")) {
-
     if(checkInputs(x,y,groups)) {
         stop("Please fix inputs.")
     }
@@ -364,8 +362,7 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE, subsampling = F
     }
 
     if(transform == TRUE) {
-        if(range(v1)[1] < -1 || range(v1)[2] > 1 || range(v2)[1] < -1 || 
-            range(v2)[2] > 1) {
+        if(range(v1)[1] < -1 || range(v1)[2] > 1 || range(v2)[1] < -1 || range(v2)[2] > 1) {
             stop("correlation vectors have values less than -1 and/or greater than 1.")
         }
         v1 <- fishersTrans(v1)
@@ -377,6 +374,8 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE, subsampling = F
         stop("components must be 3 or 5")
     }
 
+    x <- exprs(x)
+    if(is.null(y) == FALSE) { y <- exprs(y) }
     featureSize = dim(x)[1]
 
     pdata <- cbind(v1, v2)
@@ -540,5 +539,6 @@ splitMADOutlier <- function(mat, filter0 = TRUE, threshold = 2) {
             index <- c(index,i)
         }
     }
-	return(list(mat.filtered = mat.filtered, index = index))
+    colnames(mat.filtered) = colnames(mat)
+    return(list(mat.filtered = mat.filtered, index = index))
 }
