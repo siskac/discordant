@@ -280,7 +280,10 @@ checkInputs <- function(x,y,groups = NULL) {
 }
 
 createVectors <- function(x, y = NULL, groups, cor.method = c("spearman")) {
+<<<<<<< HEAD
     print(x)
+=======
+>>>>>>> release-0.99.6
     if(checkInputs(x,y,groups)) {
         stop("Please fix inputs.")
     }
