@@ -25,11 +25,7 @@
 \newcommand{\Discordant}{\Rpackage{Discordant}}
 
 \title{The Discordant R Package: A Novel Approach to Differential Correlation}
-<<<<<<< HEAD
-\author{Charlotte Siska and Katerina Kechris} 
-=======
 \author{Charlotte Siska and Katerina Kechris}
->>>>>>> release-0.99.6
 
 \begin{document}
 
@@ -188,11 +184,8 @@ btwn_vectors <- createVectors(TCGA_GBM_miRNA_microarray, TCGA_GBM_transcript_mic
 btwn_result <- discordantRun(btwn_vectors$v1, btwn_vectors$v2, TCGA_GBM_miRNA_microarray, TCGA_GBM_transcript_microarray)
 btwn_result$discordPPMatrix[1:3,1:3]
 head(btwn_result$discordPPVector)
-<<<<<<< HEAD
 btwn_result$classMatrix[1:3,1:3] 
-=======
 btwn_result$classMatrix[1:3,1:3]
->>>>>>> release-0.99.6
 head(btwn_result$classVector)
 head(btwn_result$probMatrix)
 btwn_result$loglik
