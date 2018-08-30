@@ -47,8 +47,9 @@ The functions in the Discordant package provide a simple pipeline for intermedia
 The \Rpackage{Discordant} package is available at bioconductor.org and can be downloaded via \Rfunction{bioLite}:
 
 <<biocLite, eval=FALSE>>=
-source("https://bioconductor.org/biocLite.R")
-biocLite("Discordant")
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("Discordant")
 @
 To use \Rpackage{Discordant}, import into R:
 <<initialize>>=
