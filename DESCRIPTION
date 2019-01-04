@@ -1,5 +1,5 @@
 Package: discordant
-Version: 1.7.0
+Version: 1.7.1
 Date: 2016-10-21
 Title: The Discordant Method: A Novel Approach for Differential
         Correlation
@@ -13,7 +13,7 @@ Description: Discordant is a method to determine differential
         correlation of molecular feature pairs from -omics data using
         mixture models. Algorithm is explained further in Siska et al.
 Encoding: latin1
-biocViews: BiologicalQuestion, StatisticalMethod, mRNAMicroarray,
+biocViews: ImmunoOncology, BiologicalQuestion, StatisticalMethod, mRNAMicroarray,
         Microarray, Genetics, RNASeq
 Suggests: BiocStyle, knitr
 Imports: Biobase, stats, biwt, gtools, MASS, tools
