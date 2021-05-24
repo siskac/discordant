@@ -251,8 +251,8 @@ getNames <- function(x, y = NULL) {
         namesMatrix <- NULL
 
         for(i in 1:dim(temp)[1]) {
-            outputRow <- temp[i,]
-            index <- which(is.na(outputRow) == FALSE)
+            outputCol <- temp[,i]
+            index <- which(is.na(outputCol) == FALSE)
             if(length(index) > 0) {
                 tempMatrix <- cbind(rep(rownames(x)[i],length(index)), 
                     rownames(x)[index])
@@ -328,6 +328,7 @@ createVectors <- function(x, y = NULL, groups, cor.method = c("spearman")) {
     }
 
     if(is.null(y)) {
+        data <- x # NOTE: Line added by MM to fix min(data) error below
         data1 <- x[,index1]
         data2 <- x[,index2]
         if(cor.method == c("spearman") || cor.method == c("pearson")) {
@@ -342,8 +343,10 @@ createVectors <- function(x, y = NULL, groups, cor.method = c("spearman")) {
             if(min(data) < 0) {
                 stop("SparCC can only be applied to sequencing data.")
             }   
-        statMatrix1 <- SparCC.count(t(data1))
-        statMatrix2 <- SparCC.count(t(data2))
+            # NOTE: $cor.w added to each statement below  by MM as SparCC.count
+            #    returns two vectors, one for correlation and one for covariance
+            statMatrix1 <- SparCC.count(t(data1))$cor.w
+            statMatrix2 <- SparCC.count(t(data2))$cor.w
         }   
         statVector1 <- as.vector(statMatrix1)
         statVector2 <- as.vector(statMatrix2)
