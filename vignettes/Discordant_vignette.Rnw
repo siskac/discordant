@@ -28,7 +28,10 @@
 \author{Charlotte Siska and Katerina Kechris}
 
 \begin{document}
+<<<<<<< HEAD
 \SweaveOpts{concordance=TRUE}
+=======
+>>>>>>> upstream/master
 
 \maketitle
 <<options,echo=FALSE>>=
@@ -47,9 +50,16 @@ The functions in the Discordant package provide a simple pipeline for intermedia
 
 The \Rpackage{Discordant} package is available at bioconductor.org and can be downloaded via \Rfunction{bioLite}:
 
+<<<<<<< HEAD
 <<biocLite, eval=FALSE>>=
 source("https://bioconductor.org/biocLite.R")
 biocLite("Discordant")
+=======
+<<install, eval=FALSE>>=
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("Discordant")
+>>>>>>> upstream/master
 @
 To use \Rpackage{Discordant}, import into R:
 <<initialize>>=
