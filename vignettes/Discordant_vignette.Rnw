@@ -28,6 +28,7 @@
 \author{Charlotte Siska and Katerina Kechris}
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 
 \maketitle
 <<options,echo=FALSE>>=
