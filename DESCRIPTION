@@ -6,11 +6,12 @@ Title: The Discordant Method: A Novel Approach for Differential
 Authors@R: 
     c(person("Charlotte", "Siska", 
              role = c("aut"), 
-             email = "charlotte.siska@ucdenver.edu"), 
+             email = "charlotte.siska@ucdenver.edu"),
+      person("McGrath", "Max",
+             email = "max.mcgrath@ucdenver.edu",
+             role = c("ctb", "cre")), 
       person("Katerina", "Kechris",
-             role = c("aut", "cph", "ths")),
-      person("McGrath", "Max", 
-             role = c("ctb", "cre"))),
+             role = c("aut", "cph", "ths")))
 Depends: R (>= 3.4)
 Maintainer: Max McGrath <max.mcgrath@ucdenver.edu>
 Description: Discordant is a method to determine differential
