@@ -16,23 +16,12 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE,
                           subsampling = FALSE, subSize = dim(x)[1], iter = 100, 
                           components = 3) {
   
-  if(checkInputs(x,y)) {
-    stop("Please fix inputs.")
-  }
+  .checkDiscordantInputs(v1, v2, x, y, transform, subsampling, subSize, iter, 
+                         components)
   
-  if(transform == TRUE) {
-    if(range(v1)[1] < -1 || range(v1)[2] > 1 || range(v2)[1] < -1 || 
-       range(v2)[2] > 1) {
-      stop("correlation vectors have values less than -1 and/or greater 
-                than 1.")
-    }
+  if (transform) {
     v1 <- fishersTrans(v1)
     v2 <- fishersTrans(v2)
-  }
-  
-  check <- match(components, c(3,5))
-  if(is.na(check)) {
-    stop("components must be 3 or 5")
   }
   
   x <- exprs(x)
@@ -125,7 +114,8 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE,
     tau <- total_tau / iter
     pi <- total_pi / iter
     
-    finalResult <- subSampleData(pdata, class, mu, sigma, nu, tau, pi, components)
+    finalResult <- subSampleData(pdata, class, mu, sigma, nu, tau, pi, 
+                                 components)
     zTable <- finalResult$z
     classVector <- finalResult$class
   } else {
@@ -177,29 +167,13 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE,
               probMatrix = zTable, loglik = pd$loglik))
 }
 
-#modified from package mclust
-unmap <- function(classification, components){
-    n <- length(classification)
-    # u <- sort(unique(classification)) # OG Code
-    u <- 0:(components - 1) # Max's potential fix
-    labs <- as.character(u)
-    k <- length(u)
-    z <- matrix(0, n, k)
-    for (j in 1:k) z[classification == u[j], j] <- 1
-    dimnames(z) <- list(NULL, labs)
-    return(z)
-}
-
 em.normal.partial.concordant <- function(data, class, tol=0.001, 
-    restriction=0, constrain=0, iteration=1000, components){
+    restriction=0, constrain=0, iteration=1000, components) {
     n <- as.integer(dim(data)[1])
     g <- as.integer(nlevels(as.factor(class)))
 
     yl.outer <- function(k, zx, zy){
         return( c(zx[k,] %o% zy[k,]) )
-    }
-    yl.diag <- function(k, z){
-        return( c(diag(z[k,])) )
     }
 
     zx <- unmap(class[,1], components = components)
@@ -224,9 +198,31 @@ em.normal.partial.concordant <- function(data, class, tol=0.001,
                                                 as.integer(iteration), 
                                                 convergence)
     
-    return(list(model="PCD", convergence=results[[16]], 
-        pi=t(array(results[[5]], dim=c(g,g))), mu_sigma=rbind(results[[6]], 
-        results[[7]]), nu_tau=rbind(results[[8]], results[[9]]), 
-        loglik=results[[11]], class=apply(array(results[[3]], dim=c(n,g*g)),1,
-        order,decreasing=TRUE)[1,], z=array(results[[3]], dim=c(n,g*g))))
+    return(list(model = "PCD", 
+                convergence = results[[16]],
+                pi = t(array(results[[5]], dim=c(g,g))), 
+                mu_sigma = rbind(results[[6]], results[[7]]), 
+                nu_tau = rbind(results[[8]], results[[9]]),
+                loglik = results[[11]], 
+                class = apply(array(results[[3]], dim = c(n,g*g)), 
+                              1, order, decreasing = TRUE)[1,], 
+                z = array(results[[3]], dim = c(n, g*g))))
+}
+
+.checkDiscordantInputs <- function(v1, v2, x, y, transform, 
+                                   subsampling, subSize, iter, 
+                                   components) {
+  
+  if (!is(x, "ExpressionSet") || (!is.null(y) && !is(y, "ExpressionSet"))) {
+    stop("x and y (if present) must be type ExpressionSet")
+  }
+  
+  if (!(components %in% c(3, 5))) {
+    stop ("components must be equal to 3 or 5")
+  }
+  
+  if (transform && (range(v1)[1] < -1 || range(v1)[2] > 1 || 
+                    range(v2)[1] < -1 || range(v2)[2] > 1)) {
+    stop ("correlation vectors have values less than -1 and/or greater than 1.")
+  }
 }

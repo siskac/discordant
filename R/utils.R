@@ -12,9 +12,6 @@ subSampleData <- function(pdata, class, mu, sigma, nu, tau, pi, components) {
     yl.outer <- function(k, zx, zy){
         return( c(zx[k,] %o% zy[k,]) )
     }
-    yl.diag <- function(k, z){
-        return( c(diag(z[k,])) )
-    }
     
     zx <- unmap(class[,1], components = components)
     zy <- unmap(class[,2], components = components)
@@ -32,6 +29,19 @@ subSampleData <- function(pdata, class, mu, sigma, nu, tau, pi, components) {
                               decreasing=TRUE)[1,], 
                 z = array(results[[3]], dim=c(n,g*g))))
 } 
+
+# modified from package mclust
+unmap <- function(classification, components){
+    n <- length(classification)
+    # u <- sort(unique(classification)) # OG Code
+    u <- 0:(components - 1) # Max's potential fix
+    labs <- as.character(u)
+    k <- length(u)
+    z <- matrix(0, n, k)
+    for (j in 1:k) z[classification == u[j], j] <- 1
+    dimnames(z) <- list(NULL, labs)
+    return(z)
+}
 
 getNames <- function(x, y = NULL) {
     if(is.null(y) == FALSE) {
@@ -61,18 +71,4 @@ getNames <- function(x, y = NULL) {
     vector_names <- apply(namesMatrix, 1, function(k) paste(k[1],"_",k[2],
                                                             sep = ""))
     return(vector_names)
-}
-
-checkInputs <- function(x, y, groups = NULL) {
-    issue = FALSE
-    if(is.null(groups) == FALSE  && unique(unique(groups) != c(1,2))) {
-        print("groups vector must consist of 1s and 2s corresponding to first
-             and second group.")
-        issue = TRUE
-    }
-    if(mode(x) != "S4" || (is.null(y) == FALSE && mode(y) != "S4")) {
-        print("data matrices x and/or y must be type ExpressionSet")
-        issue = TRUE
-    }
-    return(issue)
 }

@@ -6,21 +6,20 @@
 #' @import tools
 #' 
 #' @export
-createVectors <- function(x, y = NULL, groups, cor.method = c("spearman")) {
-    print(x)
-    if(checkInputs(x,y,groups)) {
-        stop("Please fix inputs.")
+createVectors <- function(x, y = NULL, groups, 
+                          cor.method = c("pearson", "spearman", "bwmc", 
+                                         "sparcc")) {
+    
+    cor.method <- match.arg(cor.method)
+    if (unique(unique(groups) != c(1,2))) {
+        stop("groups vector must consist of 1s and 2s corresponding to first
+             and second group")
     }
+    
+    print(x)
     
     index1 <- which(groups == 1)
     index2 <- which(groups == 2)
-    
-    check <- match(cor.method, c("spearman", "pearson", "bwmc", "sparcc"))
-    if(is.na(check)) {
-        stop("Please enter spearman, pearson, bwmc or sparcc for correlation 
-            metric.")
-    }
-    
     x <- exprs(x)
     
     if(is.null(y) == FALSE) {
@@ -39,10 +38,10 @@ createVectors <- function(x, y = NULL, groups, cor.method = c("spearman")) {
         }
         if(cor.method == c("sparcc")) {
             if(min(data) < 0) {
-                stop("SparCC can only be applied to sequencing data.")
+                stop("Negative values found. SparCC can only be applied to sequencing data.")
             }
-            statMatrix1 <- SparCC.count(t(data1))
-            statMatrix2 <- SparCC.count(t(data2))
+            statMatrix1 <- SparCC.count(t(data1))$cor.w
+            statMatrix2 <- SparCC.count(t(data2))$cor.w
         }
         statMatrix1 <- statMatrix1[1:featureSize,
                                    (featureSize + 1):dim(data1)[1]]
