@@ -158,9 +158,11 @@ SparCC.frac <- function(x, kmax = 10, alpha = 0.1, Vmin = 1e-4) {
 
 
 #modified from package mclust
-unmap <- function(classification){
+unmap <- function(classification, components){
     n <- length(classification)
-    u <- sort(unique(classification))
+    # u <- sort(unique(classification)) # OG Code
+    # u <- 0:max(classification) # Max's potential fix
+    u <- 0:(components - 1)
     labs <- as.character(u)
     k <- length(u)
     z <- matrix(0, n, k)
@@ -171,7 +173,7 @@ unmap <- function(classification){
 
 
 em.normal.partial.concordant <- function(data, class, tol=0.001, 
-    restriction=0, constrain=0, iteration=1000){
+    restriction=0, constrain=0, iteration=1000, components){
     n <- as.integer(dim(data)[1])
     g <- as.integer(nlevels(as.factor(class)))
 
@@ -182,8 +184,8 @@ em.normal.partial.concordant <- function(data, class, tol=0.001,
         return( c(diag(z[k,])) )
     }
 
-    zx <- unmap(class[,1])
-    zy <- unmap(class[,2])
+    zx <- unmap(class[,1], components = components)
+    zy <- unmap(class[,2], components = components)
     zxy <- sapply(1:dim(zx)[1], yl.outer, zx, zy)
 
     pi <- double(g*g)
@@ -193,10 +195,21 @@ em.normal.partial.concordant <- function(data, class, tol=0.001,
     tau <- double(g)
     loglik <- double(1)
     convergence <- integer(1)
-    results <- .C("em_normal_partial_concordant", as.double(data[,1]), 
-        as.double(data[,2]), as.double(t(zxy)), n, pi, mu, sigma, nu, tau, g, 
-        loglik, as.double(tol), as.integer(restriction), 
-        as.integer(constrain), as.integer(iteration), convergence)
+    # results <- .C("em_normal_partial_concordant", as.double(data[,1]), 
+    #     as.double(data[,2]), as.double(t(zxy)), n, pi, mu, sigma, nu, tau, g, 
+    #     loglik, as.double(tol), as.integer(restriction), 
+    #     as.integer(constrain), as.integer(iteration), convergence)
+    
+    results <- em_normal_partial_concordant_cpp(as.double(data[,1]), 
+                                                as.double(data[,2]), 
+                                                as.double(t(zxy)), n, pi, mu, 
+                                                sigma, nu, tau, g, loglik, 
+                                                as.double(tol), 
+                                                as.integer(restriction), 
+                                                as.integer(constrain), 
+                                                as.integer(iteration), 
+                                                convergence)
+    
     return(list(model="PCD", convergence=results[[16]], 
         pi=t(array(results[[5]], dim=c(g,g))), mu_sigma=rbind(results[[6]], 
         results[[7]]), nu_tau=rbind(results[[8]], results[[9]]), 
@@ -204,7 +217,7 @@ em.normal.partial.concordant <- function(data, class, tol=0.001,
         order,decreasing=TRUE)[1,], z=array(results[[3]], dim=c(n,g*g))))
 }
 
-subSampleData <- function(pdata, class, mu, sigma, nu, tau, pi) {
+subSampleData <- function(pdata, class, mu, sigma, nu, tau, pi, components) {
     n <- as.integer(dim(pdata)[1])
     g <- as.integer(nlevels(as.factor(class)))
 
@@ -215,19 +228,26 @@ subSampleData <- function(pdata, class, mu, sigma, nu, tau, pi) {
         return( c(diag(z[k,])) )
     }
 
-    zx <- unmap(class[,1])
-    zy <- unmap(class[,2])
+    zx <- unmap(class[,1], components = components)
+    zy <- unmap(class[,2], components = components)
     zxy <- sapply(1:dim(zx)[1], yl.outer, zx, zy)
 
-    results <- .C("subsampling", as.double(pdata[,1]), as.double(pdata[,2]), 
-        as.double(t(zxy)), n, as.double(pi), as.double(mu), as.double(sigma), 
-        as.double(nu), as.double(tau), g)
+    # results <- .C("subsampling", as.double(pdata[,1]), as.double(pdata[,2]), 
+    #     as.double(t(zxy)), n, as.double(pi), as.double(mu), as.double(sigma), 
+    #     as.double(nu), as.double(tau), g)
+    
+    results <- subsampling_cpp(as.double(pdata[,1]), as.double(pdata[,2]), 
+                               as.double(t(zxy)), n, as.double(pi), 
+                               as.double(mu), as.double(sigma), as.double(nu), 
+                               as.double(tau), g)
+    
     return(list(pi=t(array(results[[5]],dim=c(g,g))), 
         mu_sigma=rbind(results[[6]], results[[7]]), nu_tau=rbind(results[[8]],
         results[[9]]), class=apply(array(results[[3]], dim=c(n,g*g)),1,order,
         decreasing=TRUE)[1,], z=array(results[[3]], dim=c(n,g*g))))
 } 
 
+#' @export
 fishersTrans <- function(rho) {
     r = (1+rho)/(1-rho)
     z = 0.5*log(r,base = exp(1))
@@ -280,6 +300,14 @@ checkInputs <- function(x,y,groups = NULL) {
     return(issue)
 }
 
+#' @import Biobase
+#' @import biwt
+#' @import gtools
+#' @import MASS
+#' @import stats
+#' @import tools
+#' 
+#' @export
 createVectors <- function(x, y = NULL, groups, cor.method = c("spearman")) {
     print(x)
     if(checkInputs(x,y,groups)) {
@@ -362,6 +390,7 @@ createVectors <- function(x, y = NULL, groups, cor.method = c("spearman")) {
     return(list(v1 = statVector1, v2 = statVector2))
 }
 
+#' @export
 discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE, 
     subsampling = FALSE, subSize = dim(x)[1], iter = 100, components = 3) {
 
@@ -458,7 +487,7 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE,
             }
             pd <- em.normal.partial.concordant(sub.pdata, sub.class, 
                 tol=0.001, restriction=0, constrain=c(0,-sd(pdata),sd(pdata)),
-                iteration=1000)
+                iteration=1000, components=components)
             total_mu <- total_mu + pd$mu_sigma[1,]
             total_sigma <- total_sigma + pd$mu_sigma[2,]
             total_nu <- total_nu + pd$nu_tau[1,]
@@ -472,13 +501,13 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE,
         tau <- total_tau/iter
         pi <- total_pi/iter
 
-        finalResult <- subSampleData(pdata, class, mu, sigma, nu, tau, pi)
+        finalResult <- subSampleData(pdata, class, mu, sigma, nu, tau, pi, components)
         zTable <- finalResult$z
         classVector <- finalResult$class
     } else {
         pd <- em.normal.partial.concordant(pdata, class, tol=0.001, 
             restriction=0, constrain=c(0,-sd(pdata),sd(pdata)), 
-            iteration=1000)
+            iteration=1000, components = components)
         zTable <- pd$z
         classVector <- pd$class
     }
@@ -522,6 +551,7 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE,
         probMatrix = zTable, loglik = pd$loglik))
 }
 
+#' @export
 splitMADOutlier <- function(mat, filter0 = TRUE, threshold = 2) {
     if(mode(mat) != "S4") {
         stop("data matrix mat must be type ExpressionSet")
