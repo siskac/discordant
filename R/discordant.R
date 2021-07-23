@@ -26,7 +26,7 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE,
     }
   
     x <- exprs(x)
-    if (is.null(y) == FALSE) { y <- exprs(y) }
+    if (!is.null(y)) { y <- exprs(y) }
     featureSize = dim(x)[1]
     
     pdata <- cbind(v1, v2)

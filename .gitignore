@@ -14,3 +14,5 @@ vignettes/*.log
 vignettes/*.pdf
 vignettes/*.toc
 vignettes/*.gz
+*.swo
+*.swp
