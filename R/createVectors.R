@@ -7,11 +7,11 @@
 #' 
 #' @export
 createVectors <- function(x, y = NULL, groups, 
-                          cor.method = c("pearson", "spearman", "bwmc", 
+                          cor.method = c("spearman", "pearson", "bwmc", 
                                          "sparcc")) {
     cor.method <- match.arg(cor.method)
     .checkCreateVectorsInputs(x, y, groups, cor.method)
-    print(x)
+    #print(x)
     
     index1 <- which(groups == 1)
     index2 <- which(groups == 2)
@@ -78,7 +78,6 @@ createVectors <- function(x, y = NULL, groups,
         y <- exprs(y)
         data <- rbind(x, y)
     }
-    
     if (cor.method == "sparcc" && min(data) < 0) {
         stop("Negative values found. SparCC can only be applied to ",
              "sequencing data.")

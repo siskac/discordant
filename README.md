@@ -6,7 +6,7 @@ feature pairs from -omics data using mixture models.
 
 ### Information
 
-Method published in 
+Method paper published in 
 [Bioinformatics](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5006287/)
 
 >Siska C, Bowler R, Kechris K. The discordant method: a novel approach for 
@@ -14,7 +14,7 @@ Method published in
 >Jan 1;33(1):150]. Bioinformatics. 2016;32(5):690-696. 
 >doi:10.1093/bioinformatics/btv633
 
-Software published in 
+Software paper published in 
 [BMC Research Notes](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5244536/)
 
 >Siska C, Kechris K. Differential correlation for sequencing data. BMC Res 
