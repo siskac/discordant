@@ -1,3 +1,26 @@
+#' Fisher Transformation of Pearson Correlation Coefficients to Z Scores
+#' 
+#' Transforms Pearsons correlation coefficients into z scores using Fishers 
+#' method.
+#' 
+#' @param rho Integer or numeric vector of Pearson's correlation coefficients
+#' @return Returns Fisher-transformed correlation coefficients
+#' @references 
+#' Fisher, R.A. (1915). "Frequency distribution of the values of the correlation
+#' coefficient in samples of an indefinitely large population". Biometrika
+#' (Biometrika Trust) 10 (4).
+#' @details Fisher's transformation is when correlation coefficients are 
+#' transformed into a z score. These z scores have an approximately normal 
+#' distribution.
+#' @examples 
+#' ## Create integer or list of Pearson's correlation coefficients.
+#' 
+#' library(MASS)
+#' rhoV <- as.vector(cor(t(mvrnorm(10,rep(3,100),diag(100)))))
+#' 
+#' ## Determine Fisher-Transformed z scores of rho
+#' zV <- fishersTrans(rhoV)
+#' 
 #' @export
 fishersTrans <- function(rho) {
     r = (1 + rho) / (1 - rho)

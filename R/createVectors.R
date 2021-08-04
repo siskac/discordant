@@ -1,3 +1,45 @@
+#' Create correlation coefficient vectors based on bivariate data
+#' 
+#' Calculates correlation coefficients based on two groups of -omics bivariate 
+#' data. Currently, only two groups of samples can be specified. Used to make 
+#' input for discordantRun().
+#' 
+#' @param x ExpressionSet of -omics data
+#' @param y Optional second ExpressionSet of -omics data, induces dual -omics 
+#' analysis
+#' @param groups n-length vector of 1s and 2s matching samples belonging to 
+#' groups 1 and 2
+#' @param cor.method Correlation method to measure association. Options are 
+#' "spearman", "pearson", "bwmc" and "sparcc"
+#' @details Creates vectors of correlation coefficents based on feature pairs 
+#' within x or between x and y. The names of the vectors are the feature pairs 
+#' taken from x and y.
+#' @return List of two named numeric vectors. Vectors give the correlation
+#' coefficients for groups 1 and 2 respectively, and vector names give
+#' the each feature for the resptive feature pair seperated by an underscore.
+#' @author Charlotte Siska \email{siska.charlotte@@gmail.com}
+#' @author Max McGrath \email{max.mcgrath@@ucdenver.edu}
+#' @examples 
+#' 
+#' ## load data
+#' data("TCGA_GBM_miRNA_microarray")
+#' data("TCGA_GBM_transcript_microarray")
+#' print(colnames(TCGA_GBM_transcript_microarray)) # look at groups
+#' groups <- c(rep(1,10), rep(2,20))
+#' # transcript-transcript pairs
+#' vectors <- createVectors(TCGA_GBM_transcript_microarray, 
+#'                          groups = groups, cor.method = c("pearson"))
+#' # miRNA-transcript pairs
+#' vectors <- createVectors(TCGA_GBM_transcript_microarray, 
+#'                          TCGA_GBM_miRNA_microarray, groups = groups)
+#'                          
+#' @references 
+#' Siska C, Bowler R and Kechris K. The Discordant Method: A Novel Approach for 
+#' Differential Correlation. (2015) Bioinformatics. 32(5): 690-696.
+#' 
+#' Friedman J and Alm EJ. Inferring Correlation Networks from Genomic Survey 
+#' Data. (2012) PLoS Computational Biology. 8:9, e1002687.
+#' 
 #' @import Biobase
 #' @import biwt
 #' @import gtools
