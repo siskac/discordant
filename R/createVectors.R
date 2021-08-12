@@ -53,22 +53,16 @@ createVectors <- function(x, y = NULL, groups,
                                          "sparcc")) {
     cor.method <- match.arg(cor.method)
     .checkCreateVectorsInputs(x, y, groups, cor.method)
-    #print(x)
-    
-    index1 <- which(groups == 1)
-    index2 <- which(groups == 2)
-    x <- exprs(x)
     
     if(is.null(y)) {
-        data <- x
+        data <- exprs(x)
     } else {
-        y <- exprs(y)
-        data <- rbind(x, y)
-        featureSize <- dim(x)[1]
+        data <- rbind(exprs(x), exprs(y))
+        featureSize <- dim(exprs(x))[1]
     }
     
-    data1 <- data[,index1]
-    data2 <- data[,index2]
+    data1 <- data[, which(groups == 1)]
+    data2 <- data[, which(groups == 2)]
     
     if (cor.method == "spearman" || cor.method == "pearson") {
         statMatrix1 <- cor(t(data1), method = cor.method)
@@ -82,8 +76,6 @@ createVectors <- function(x, y = NULL, groups,
     }
     
     if (is.null(y)) {
-        statVector1 <- as.vector(statMatrix1)
-        statVector2 <- as.vector(statMatrix2)
         diag <- lower.tri(statMatrix1, diag = FALSE)
         statVector1 <- statMatrix1[diag]
         statVector2 <- statMatrix2[diag]
@@ -96,7 +88,7 @@ createVectors <- function(x, y = NULL, groups,
         statVector2 <- as.vector(statMatrix2)
     }
     
-    vector_names <- getNames(x, y)
+    vector_names <- .getNames(exprs(x), y)
     names(statVector1) <- vector_names
     names(statVector2) <- vector_names
     return(list(v1 = statVector1, v2 = statVector2))

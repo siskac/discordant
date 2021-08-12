@@ -317,10 +317,10 @@ from x and the column names are features from y.
 
 ```{r}
 # Within -omics
-wthn_result$discordPPMatrix[1:4, 1:4]
+wthn_result$discordPPMatrix[1:5, 1:4]
 
 # Between -omics
-btwn_result$discordPPMatrix[1:4, 1:4]
+btwn_result$discordPPMatrix[1:5, 1:4]
 ```
 
 __discordPPVector__
@@ -339,22 +339,22 @@ head(btwn_result$discordPPVector)
 __classMatrix__
 
 Matrix of classes with the highest posterior probability for each pair. 
-Row and column names are the same as in discordPPMatrix and determined by 
+Row and column names are the same as in \code{discordPPMatrix} and determined by 
 whether only x is inputted or both x and y.
 
 ```{r}
 # Within -omics
-wthn_result$classMatrix[1:4,1:4]
+wthn_result$classMatrix[1:5,1:4]
 
 # Between -omics
-btwn_result$classMatrix[1:4,1:4]
+btwn_result$classMatrix[1:5,1:4]
 ```
 
 __classVector__
 
 Vector of class with the highest posterior probability for each pair. The 
 length is the number of feature pairs. Names of vector correspond to the 
-feature pairs, similar to discordPPVector.
+feature pairs, similar to \code{discordPPVector}.
 
 ```{r}
 # Within -omics
@@ -370,9 +370,9 @@ Matrix of all posterior probabilities, where the number of rows is
 the number of feature pairs and the columns represent the class within the 
 class matrix. The number of columns can be 9 or 25, depending on how many 
 mixture components are chosen (discussed later). The values across each row 
-add up to 1. Posterior probabilities in discordPPMatrix and discordPPVector 
-are the summation of columns that correspond to differential correlation 
-classes (Table 1).
+add up to 1. Posterior probabilities in \code{discordPPMatrix} and 
+\code{discordPPVector} are the summation of columns that correspond to 
+differential correlation classes (Table 1).
 
 ```{r}
 # Within -omics
@@ -460,13 +460,11 @@ data(TCGA_GBM_transcript_microarray)
 groups <- c(rep(1,10), rep(2,10))
 
 #Within -Omics
-
 wthn_vectors <- createVectors(TCGA_GBM_transcript_microarray, groups = groups)
 wthn_result <- discordantRun(wthn_vectors$v1, wthn_vectors$v2, 
                              TCGA_GBM_transcript_microarray)
 
 #Between -Omics
-
 btwn_vectors <- createVectors(TCGA_GBM_miRNA_microarray, 
                               TCGA_GBM_transcript_microarray, groups = groups)
 btwn_result <- discordantRun(btwn_vectors$v1, btwn_vectors$v2, 

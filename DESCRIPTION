@@ -17,7 +17,7 @@ Encoding: UTF-8
 biocViews: ImmunoOncology, BiologicalQuestion, StatisticalMethod, 
     mRNAMicroarray, Microarray, Genetics, RNASeq
 Suggests: BiocStyle, knitr, testthat
-Imports: Rcpp, Biobase, stats, biwt, gtools, MASS, tools
+Imports: Rcpp, Biobase, stats, biwt, gtools, MASS, tools, dplyr, methods
 License: GPL (>= 2)
 URL: https://github.com/siskac/discordant
 NeedsCompilation: yes

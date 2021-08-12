@@ -160,7 +160,7 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE,
       tau <- total_tau / iter
       pi <- total_pi / iter
       
-      finalResult <- subSampleData(pdata, class, mu, sigma, nu, tau, pi, 
+      finalResult <- .subSampleData(pdata, class, mu, sigma, nu, tau, pi, 
                                    components)
       zTable <- finalResult$z
       classVector <- finalResult$class
@@ -182,7 +182,7 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE,
         colnames(discordPPMatrix) <- rownames(x)
         rownames(classMatrix) <- rownames(x)
         colnames(classMatrix) <- rownames(x)
-        vector_names <- getNames(x)
+        vector_names <- .getNames(x)
         names(discordPPV) <- vector_names
         names(classVector) <- vector_names
     } else {
@@ -194,7 +194,7 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE,
         rownames(classMatrix) <- rownames(x)
         colnames(classMatrix) <- rownames(y)
         
-        vector_names <- getNames(x,y)
+        vector_names <- .getNames(x,y)
         names(discordPPV) <- vector_names
         names(classVector) <- vector_names
     }
@@ -219,8 +219,8 @@ em.normal.partial.concordant <- function(data, class, components) {
         return( c(zx[k,] %o% zy[k,]) )
     }
 
-    zx <- unmap(class[,1], components = components)
-    zy <- unmap(class[,2], components = components)
+    zx <- .unmap(class[,1], components = components)
+    zy <- .unmap(class[,2], components = components)
     zxy <- sapply(1:dim(zx)[1], yl.outer, zx, zy)
 
     pi <- double(g*g)
@@ -267,6 +267,7 @@ em.normal.partial.concordant <- function(data, class, components) {
 }
 
 # Internal function to validate user inputs for discordantRun()
+#' @importFrom methods is
 .checkDiscordantInputs <- function(v1, v2, x, y, transform, 
                                    subsampling, subSize, iter, 
                                    components) {

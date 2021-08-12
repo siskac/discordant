@@ -28,7 +28,7 @@ fishersTrans <- function(rho) {
     return(z)
 }
 
-subSampleData <- function(pdata, class, mu, sigma, nu, tau, pi, components) {
+.subSampleData <- function(pdata, class, mu, sigma, nu, tau, pi, components) {
     n <- as.integer(dim(pdata)[1])
     g <- as.integer(nlevels(as.factor(class)))
     
@@ -54,7 +54,7 @@ subSampleData <- function(pdata, class, mu, sigma, nu, tau, pi, components) {
 } 
 
 # modified from package mclust
-unmap <- function(classification, components){
+.unmap <- function(classification, components){
     n <- length(classification)
     # u <- sort(unique(classification)) # OG Code
     u <- 0:(components - 1) # Max's potential fix
@@ -66,8 +66,9 @@ unmap <- function(classification, components){
     return(z)
 }
 
-getNames <- function(x, y = NULL) {
+.getNames <- function(x, y = NULL) {
     if(is.null(y) == FALSE) {
+        y <- exprs(y)
         namesMatrix <- NULL
         for(i in 1:nrow(x)) {
             tempMatrix <- cbind(rep(rownames(x)[i], nrow(y)), rownames(y))
