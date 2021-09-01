@@ -1,6 +1,6 @@
 ---
 title: "The discordant R Package: A Novel Approach to Differential Correlation"
-shorttitle: "Discordant"
+shorttitle: "discordant"
 author:
   - name: Charlotte Siska
     email: charlotte.siska@ucdenver.edu
@@ -84,14 +84,17 @@ are considered *differentially* correlated, as opposed to when correlation
 coefficients are in the *same* component then they are *equivalently* 
 correlated.
 
-  | 0 | - | +
---|---|---|--
-0 | 1 | 2 | 3
-- | 4 | 5 | 6
-+ | 7 | 8 | 9
-: (\#tab:table) Class Matrix for Three Component Mixture Model.
+\[
+\begin{array}{c|c c c}
+  \text{} & \text{0} & \text{-}  & \text{+}\\ 
+\hline
+   0 & 1 & 2  & 3 \\
+   - & 4 & 5  & 6 \\
+   + & 7 & 8  & 9 \\ 
+\end{array}
+\]
 
-The class matrix (Table 1) contains the classes that represent all possible 
+The class matrix (above) contains the classes that represent all possible 
 paired-correlation scenarios. These scenarios are based off the components in 
 the mixture models. Molecular features that have correlation coefficients in 
 different components are considered differentially correlated, as opposed to 
@@ -229,7 +232,7 @@ whether one or two matrices are parameters for this function. `createVectors()`
 is run as follows:
 
 ```{r}
-groups <- c(rep(1,10), rep(2,10))
+groups <- c(rep(1,10), rep(2,20))
 
 # Within -omics
 wthn_vectors <- createVectors(x = TCGA_GBM_transcript_microarray, 
@@ -418,58 +421,61 @@ data has a greater feature size than the microarray data. A dataset with small
 feature size will cause a segmentation fault with subsampling because not enough
 feature pairs are being used to estimate parameters in the mixture model.
 
-\begin{table}[h]
-\begin{center}
-\begin{tabular}{ c |  c c c c c}  
-  & 0 & - & -- & + & ++ \\
-\hline
-0 & 1 & 2 & 3 & 4 & 5 \\
-- & 6 & 7 & 8 & 9 & 10  \\  
--- & 11 & 12 & 13 & 14 & 15 \\
-+ & 16 & 17 & 18 & 19 & 20 \\
-++ & 21 & 22 & 23 & 24 & 25
-\end{tabular}
-\caption{Class Matrix for Five Component Mixture Model}
-\end{center}
-\end{table}
-
-## Number of Components
+## Five Components
 
 We also provide the option to increase component size from three to five in the 
 mixture model. The number of classes in the class matrix increases, as seen in 
-Table 2. Incorporating the extra components means that it is possible to 
+the table below. Incorporating the extra components means that it is possible to
 identify elevated differential correlation, which is when there are associations
-in both groups in the same direction but one is more extreme. Using this options
+in both groups in the same direction but one is more extreme. Using this option
 introduces more parameters, which does have an effect on run-time. We also found
 that using the five mixture component mixture model reduces performance compared
 to the three component mixture model(@siska2). However, the option is 
 available if users wish to explore more types of differential correlation.
 
+\[
+\begin{array}{c|c c c c c}
+  \text{} & \text{0} & \text{-}  & \text{--} & \text{+} & \text{++} \\ 
+\hline
+  0 & 1 & 2 & 3 & 4 & 5 \\
+  - & 6 & 7 & 8 & 9 & 10  \\  
+  -- & 11 & 12 & 13 & 14 & 15 \\
+  + & 16 & 17 & 18 & 19 & 20 \\
+  ++ & 21 & 22 & 23 & 24 & 25
+\end{array}
+\]
+
 By default, `discordantRun()` uses a three component mixture model, but this may
 be changed to a five component mixture model by setting the argument
-`components = 5`.
+`components = 5`. A greater amount of data (specifically a greater number of 
+features) is necessary to accurately estimate 5 components compared to 3.
+If an insufficient amount of data is used, `discordantRun()` will throw an error
+suggesting the user increase the number of features or reduce the chosen
+number of components. The data used for the within -omics analysis above does
+not have enough features to estimate 5 components, so an error is thrown below.
 
-# Microarray Example
+```{r, error = TRUE}
+# Within -omics
+wthn_result <- discordantRun(v1 = wthn_vectors$v1, 
+                             v2 = wthn_vectors$v2, 
+                             x = TCGA_GBM_transcript_microarray,
+                             components = 5)
+```
 
-__This section is just a repeat of above section's code__ *Need to figure
-out additional example, ideall involving subsampling or 5 components or both*
+However, the between -omics analysis above is a suitable candidate for further
+analysis using five components, so an example of such an analysis is provided
+below.
 
 ```{r}
-data(TCGA_GBM_miRNA_microarray)
-data(TCGA_GBM_transcript_microarray)
-groups <- c(rep(1,10), rep(2,10))
+# Between -omics
+btwn_result <- discordantRun(v1 = btwn_vectors$v1, 
+                             v2 = btwn_vectors$v2, 
+                             x = TCGA_GBM_miRNA_microarray, 
+                             y = TCGA_GBM_transcript_microarray,
+                             components = 5)
 
-#Within -Omics
-wthn_vectors <- createVectors(TCGA_GBM_transcript_microarray, groups = groups)
-wthn_result <- discordantRun(wthn_vectors$v1, wthn_vectors$v2, 
-                             TCGA_GBM_transcript_microarray)
-
-#Between -Omics
-btwn_vectors <- createVectors(TCGA_GBM_miRNA_microarray, 
-                              TCGA_GBM_transcript_microarray, groups = groups)
-btwn_result <- discordantRun(btwn_vectors$v1, btwn_vectors$v2, 
-                             TCGA_GBM_miRNA_microarray, 
-                             TCGA_GBM_transcript_microarray)
+# Between -omics
+round(head(btwn_result$probMatrix), 2)
 ```
 
 # Session Info

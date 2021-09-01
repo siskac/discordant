@@ -56,8 +56,10 @@ createVectors <- function(x, y = NULL, groups,
     
     if(is.null(y)) {
         data <- exprs(x)
+        vector_names <- .getNames(exprs(x), y)
     } else {
         data <- rbind(exprs(x), exprs(y))
+        vector_names <- .getNames(exprs(x), exprs(y))
         featureSize <- dim(exprs(x))[1]
     }
     
@@ -88,7 +90,6 @@ createVectors <- function(x, y = NULL, groups,
         statVector2 <- as.vector(statMatrix2)
     }
     
-    vector_names <- .getNames(exprs(x), y)
     names(statVector1) <- vector_names
     names(statVector2) <- vector_names
     return(list(v1 = statVector1, v2 = statVector2))

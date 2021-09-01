@@ -36,8 +36,8 @@ fishersTrans <- function(rho) {
         return( c(zx[k,] %o% zy[k,]) )
     }
     
-    zx <- unmap(class[,1], components = components)
-    zy <- unmap(class[,2], components = components)
+    zx <- .unmap(class[,1], components = components)
+    zy <- .unmap(class[,2], components = components)
     zxy <- sapply(1:dim(zx)[1], yl.outer, zx, zy)
     
     results <- subsampling_cpp(as.double(pdata[,1]), as.double(pdata[,2]), 
@@ -66,33 +66,15 @@ fishersTrans <- function(rho) {
     return(z)
 }
 
+#' @importFrom utils combn
 .getNames <- function(x, y = NULL) {
-    if(is.null(y) == FALSE) {
-        y <- exprs(y)
-        namesMatrix <- NULL
-        for(i in 1:nrow(x)) {
-            tempMatrix <- cbind(rep(rownames(x)[i], nrow(y)), rownames(y))
-            namesMatrix <- rbind(namesMatrix, tempMatrix)
-        }
+    if (is.null(y)) {
+        vector_names <- paste0(combn(rownames(x), 2)[1, ], "_", 
+                               combn(rownames(x), 2)[2, ])
     } else {
-        temp <- matrix(NA,nrow = nrow(x), ncol = nrow(x))
-        diag <- lower.tri(temp, diag = FALSE)
-        temp[diag] <- rep(1, sum(diag == TRUE))
-        
-        namesMatrix <- NULL
-        
-        for(i in 1:dim(temp)[1]) {
-            outputCol <- temp[,i]
-            index <- which(is.na(outputCol) == FALSE)
-            if(length(index) > 0) {
-                tempMatrix <- cbind(rep(rownames(x)[i],length(index)), 
-                                    rownames(x)[index])
-                namesMatrix <- rbind(namesMatrix, tempMatrix)
-            }
-        }
+        name_combns <- expand.grid(rownames(y), rownames(x))
+        vector_names <- paste0(name_combns[[2]], "_", name_combns[[1]])
     }
     
-    vector_names <- apply(namesMatrix, 1, function(k) paste(k[1],"_",k[2],
-                                                            sep = ""))
     return(vector_names)
 }

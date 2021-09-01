@@ -126,9 +126,7 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE,
     if (subsampling) {
         subSize <- min(nrow(x), nrow(y))
         total_mu <- total_sigma <- total_nu <- 
-          total_tau <- total_pi <- rep(0, components) 
-        # NOTE: changed this from default 3 to components... need to figure out 
-        #   if that's right
+          total_tau <- total_pi <- rep(0, components)
         
         for(i in 1:iter) {
             # make sure pairs are independent
@@ -221,6 +219,7 @@ em.normal.partial.concordant <- function(data, class, components) {
 
     zx <- .unmap(class[,1], components = components)
     zy <- .unmap(class[,2], components = components)
+    .checkForMissingComponents(zx, zy)
     zxy <- sapply(1:dim(zx)[1], yl.outer, zx, zy)
 
     pi <- double(g*g)
@@ -277,9 +276,9 @@ em.normal.partial.concordant <- function(data, class, components) {
   }
   
   # Need to double check if this is true w/ Katerina
-  if (is.null(y) && subsampling) {
-    stop("y cannot be NULL if subsampling is TRUE")
-  }
+  # if (is.null(y) && subsampling) {
+  #   stop("y cannot be NULL if subsampling is TRUE")
+  # }
   
   if (!(components %in% c(3, 5))) {
     stop ("components must be equal to 3 or 5")
@@ -288,5 +287,15 @@ em.normal.partial.concordant <- function(data, class, components) {
   if (transform && (range(v1)[1] < -1 || range(v1)[2] > 1 || 
                     range(v2)[1] < -1 || range(v2)[2] > 1)) {
     stop ("correlation vectors have values less than -1 and/or greater than 1.")
+  }
+}
+
+.checkForMissingComponents <- function(zx, zy) {
+  sumZx <- colSums(zx)
+  sumZy <- colSums(zy)
+  if(any(c(sumZx, sumZy) == 0)) {
+    stop("Insufficient data for component estimation. Increase number of 
+         features or reduce number of components used. If subsampling=TRUE,
+         consider increasing subSize as well.")
   }
 }

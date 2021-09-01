@@ -16,11 +16,15 @@ Description: Discordant is a method to determine differential
 Encoding: UTF-8
 biocViews: ImmunoOncology, BiologicalQuestion, StatisticalMethod, 
     mRNAMicroarray, Microarray, Genetics, RNASeq
-Suggests: BiocStyle, knitr, testthat
-Imports: Rcpp, Biobase, stats, biwt, gtools, MASS, tools, dplyr, methods
+Suggests: 
+    BiocStyle,
+    knitr,
+    testthat (>= 3.0.0)
+Imports: Rcpp, Biobase, stats, biwt, gtools, MASS, tools, dplyr, methods, utils
 License: GPL (>= 2)
 URL: https://github.com/siskac/discordant
 NeedsCompilation: yes
 LinkingTo: Rcpp
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
+Config/testthat/edition: 3
