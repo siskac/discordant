@@ -106,25 +106,16 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE,
         v1 <- fishersTrans(v1)
         v2 <- fishersTrans(v2)
     }
-  
     x <- exprs(x)
     if (!is.null(y)) { y <- exprs(y) }
-    featureSize = dim(x)[1]
-    
     pdata <- cbind(v1, v2)
     param1 <- sd(v1)
     param2 <- sd(v2)
     class <- cbind(.assignClass(v1, param1, components),
                    .assignClass(v2, param2, components))
     
-    if (components == 3) {
-        discordClass <- c(2,3,4,6,7,8)
-    } else {
-        discordClass <- setdiff(1:25, c(1, 7, 13, 19, 25))
-    }
-    
     if (subsampling) {
-        subSize = .setSubSize(x, y)
+        subSize <- .setSubSize(x, y)
         total_mu <- total_sigma <- total_nu <- 
           total_tau <- total_pi <- rep(0, components)
         
@@ -158,41 +149,7 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE,
         classVector <- pd$class
     }
     
-    discordPPV <- apply(zTable, 1, function(x) sum(x[discordClass])/sum(x))
-    
-    if(is.null(y)) {
-        discordPPMatrix <- matrix(NA,nrow = featureSize, ncol = featureSize)
-        classMatrix <- discordPPMatrix
-        diag <- lower.tri(discordPPMatrix, diag = FALSE)
-        discordPPMatrix[diag] <- discordPPV
-        classMatrix[diag] <- classVector
-        rownames(discordPPMatrix) <- rownames(x)
-        colnames(discordPPMatrix) <- rownames(x)
-        rownames(classMatrix) <- rownames(x)
-        colnames(classMatrix) <- rownames(x)
-        vector_names <- .getNames(x)
-        names(discordPPV) <- vector_names
-        names(classVector) <- vector_names
-    } else {
-        discordPPMatrix <- matrix(discordPPV, nrow = featureSize, 
-                                  byrow = FALSE)
-        classMatrix <- matrix(classVector, nrow = featureSize, byrow = FALSE)
-        rownames(discordPPMatrix) <- rownames(x)
-        colnames(discordPPMatrix) <- rownames(y)
-        rownames(classMatrix) <- rownames(x)
-        colnames(classMatrix) <- rownames(y)
-        
-        vector_names <- .getNames(x,y)
-        names(discordPPV) <- vector_names
-        names(classVector) <- vector_names
-    }
-    
-    zTable <- t(apply(zTable, 1, function(x) x/sum(x)))
-    rownames(zTable) <- vector_names
-    
-    return(list(discordPPMatrix = discordPPMatrix, discordPPVector = discordPPV,
-                classMatrix = classMatrix, classVector = classVector, 
-                probMatrix = zTable, loglik = pd$loglik))
+    rtn <- .prepareOutput(x, y, pd, zTable, classVector, components)
 }
 
 em.normal.partial.concordant <- function(data, class, components) {
@@ -241,6 +198,47 @@ em.normal.partial.concordant <- function(data, class, components) {
                 z = array(results[[3]], dim = c(n, g*g))))
 }
 
+.prepareOutput <- function(x, y, pd, zTable, classVector, components) {
+  
+    if (components == 3) {
+        discordClass <- c(2,3,4,6,7,8)
+    } else {
+        discordClass <- setdiff(1:25, c(1, 7, 13, 19, 25))
+    }
+    featureSize = dim(x)[1]
+    discordPPV <- apply(zTable, 1, function(x) sum(x[discordClass]) / sum(x))
+    
+    if(is.null(y)) {
+        discordPPMatrix <- matrix(NA, nrow = featureSize, ncol = featureSize)
+        classMatrix <- discordPPMatrix
+        diag <- lower.tri(discordPPMatrix, diag = FALSE)
+        discordPPMatrix[diag] <- discordPPV
+        classMatrix[diag] <- classVector
+        colnames(discordPPMatrix) <- rownames(x)
+        colnames(classMatrix) <- rownames(x)
+        vector_names <- .getNames(x)
+    } else {
+        discordPPMatrix <- matrix(discordPPV, nrow = featureSize, 
+                                  byrow = FALSE)
+        classMatrix <- matrix(classVector, nrow = featureSize, byrow = FALSE)
+        colnames(discordPPMatrix) <- rownames(y)
+        colnames(classMatrix) <- rownames(y)
+        vector_names <- .getNames(x,y)
+    }
+
+    rownames(discordPPMatrix) <- rownames(x)
+    rownames(classMatrix) <- rownames(x)
+    names(discordPPV) <- vector_names
+    names(classVector) <- vector_names
+    
+    zTable <- t(apply(zTable, 1, function(x) x / sum(x)))
+    rownames(zTable) <- vector_names
+    
+    return(list(discordPPMatrix = discordPPMatrix, discordPPVector = discordPPV,
+                classMatrix = classMatrix, classVector = classVector, 
+                probMatrix = zTable, loglik = pd$loglik))
+}
+
 
 # Internal function to assign class to vector based on number of components and 
 #   each elements distance from zero
@@ -255,28 +253,30 @@ em.normal.partial.concordant <- function(data, class, components) {
   return(rtn)
 }
 
+# Internal function to independently subsample data according to whether the
+#   analysis is within -omics or between -omics. 
 .createSubsamples <- function(x, y = NULL, v1, v2, subSize) {
-  if(is.null(y)) {
-    sampleNames <- rownames(x)
-    nameSet1 <- sample(sampleNames, subSize)
-    nameSet2 <- sample(setdiff(sampleNames, nameSet1))
-    nameSetA <- paste0(nameSet1, "_", nameSet2)
-    nameSetB <- paste0(nameSet2, "_", nameSet1)
-    subSampV1 <- ifelse(is.na(v1[nameSetA]), v1[nameSetB], v1[nameSetA])
-    subSampV2 <- ifelse(is.na(v2[nameSetA]), v2[nameSetB], v2[nameSetA])
-  } else {
-    # make sure pairs are independent
-    rowIndex <- sample(nrow(x), subSize)
-    colIndex <- sample(nrow(y), subSize)
-    mat1 <- matrix(v1, nrow = nrow(x), byrow = FALSE)
-    mat2 <- matrix(v2, nrow = nrow(x), byrow = FALSE)
-    subSampV1 <- sapply(1:subSize, function(x) mat1[rowIndex[x], 
-                                                    colIndex[x]])
-    subSampV2 <- sapply(1:subSize, function(x) mat2[rowIndex[x], 
-                                                    colIndex[x]])
-  }
-  return(list(v1 = subSampV1,
-              v2 = subSampV2))
+    if(is.null(y)) {
+        sampleNames <- rownames(x)
+        nameSet1 <- sample(sampleNames, subSize)
+        nameSet2 <- sample(setdiff(sampleNames, nameSet1), subSize)
+        nameSetA <- paste0(nameSet1, "_", nameSet2)
+        nameSetB <- paste0(nameSet2, "_", nameSet1)
+        subSampV1 <- ifelse(is.na(v1[nameSetA]), v1[nameSetB], v1[nameSetA])
+        subSampV2 <- ifelse(is.na(v2[nameSetA]), v2[nameSetB], v2[nameSetA])
+    } else {
+        # make sure pairs are independent
+        rowIndex <- sample(nrow(x), subSize)
+        colIndex <- sample(nrow(y), subSize)
+        mat1 <- matrix(v1, nrow = nrow(x), byrow = FALSE)
+        mat2 <- matrix(v2, nrow = nrow(x), byrow = FALSE)
+        subSampV1 <- sapply(1:subSize, function(x) mat1[rowIndex[x], 
+                                                        colIndex[x]])
+        subSampV2 <- sapply(1:subSize, function(x) mat2[rowIndex[x], 
+                                                        colIndex[x]])
+    }
+    return(list(v1 = subSampV1,
+                v2 = subSampV2))
 }
 
 # Internal function to validate user inputs for discordantRun()
@@ -288,11 +288,6 @@ em.normal.partial.concordant <- function(data, class, components) {
   if (!is(x, "ExpressionSet") || (!is.null(y) && !is(y, "ExpressionSet"))) {
     stop("x and y (if present) must be type ExpressionSet")
   }
-  
-  # Need to double check if this is true w/ Katerina
-  # if (is.null(y) && subsampling) {
-  #   stop("y cannot be NULL if subsampling is TRUE")
-  # }
   
   if (!(components %in% c(3, 5))) {
     stop ("Components must be equal to 3 or 5")
