@@ -131,14 +131,31 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE,
         for(i in 1:iter) {
             # make sure pairs are independent
             rowIndex <- sample(nrow(x), subSize)
-            colIndex <- sample(nrow(y), subSize)
-            mat1 <- matrix(v1, nrow = nrow(x), byrow = FALSE)
-            mat2 <- matrix(v2, nrow = nrow(x), byrow = FALSE)
             
-            subSampV1 <- sapply(1:subSize, function(x) mat1[rowIndex[x], 
-                                                            colIndex[x]])
-            subSampV2 <- sapply(1:subSize, function(x) mat2[rowIndex[x], 
-                                                            colIndex[x]])
+            if(is.null(y)) {
+              # colIndex <- sample(nrow(x), subSize)
+              sampleNames <- rownames(x)
+              
+              if (floor(length(sampleNames) / 2) < subSize) {
+                warning("Provided subSize too high. Using number of features divided by 2.")
+                subSize <- floor(length(sampleNames) / 2)
+              }
+              
+              nameSet1 <- sample(sampleNames, subSize)
+              nameSet2 <- setdiff(sampleNames, nameSet1)
+              nameSetA <- paste0(nameSet1, "_", nameSet2)
+              nameSetB <- paste0(nameSet2, "_", nameSet1)
+              subSampV1 <- ifelse(is.na(v1[nameSetA]), v1[nameSetB], v1[nameSetA])
+              subSampV2 <- ifelse(is.na(v2[nameSetA]), v2[nameSetB], v2[nameSetA])
+            } else {
+              colIndex <- sample(nrow(y), subSize)
+              mat1 <- matrix(v1, nrow = nrow(x), byrow = FALSE)
+              mat2 <- matrix(v2, nrow = nrow(x), byrow = FALSE)
+              subSampV1 <- sapply(1:subSize, function(x) mat1[rowIndex[x], 
+                                                              colIndex[x]])
+              subSampV2 <- sapply(1:subSize, function(x) mat2[rowIndex[x], 
+                                                              colIndex[x]])
+            }
             
             sub.pdata <- cbind(subSampV1, subSampV2)
             sub.class <- cbind(.assignClass(subSampV1, param1, components),
@@ -265,6 +282,10 @@ em.normal.partial.concordant <- function(data, class, components) {
   return(rtn)
 }
 
+# .createSubsamples <- function(x, y = NULL, v1, v2) {
+#   
+# }
+
 # Internal function to validate user inputs for discordantRun()
 #' @importFrom methods is
 .checkDiscordantInputs <- function(v1, v2, x, y, transform, 
@@ -290,6 +311,9 @@ em.normal.partial.concordant <- function(data, class, components) {
   }
 }
 
+# Internal function that checks whether all types of component are present
+#   in given vectors. If a certain component is not present, we run into a
+#   divide-by-zero error that crashes R
 .checkForMissingComponents <- function(zx, zy) {
   sumZx <- colSums(zx)
   sumZy <- colSums(zy)
