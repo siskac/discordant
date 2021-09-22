@@ -96,7 +96,7 @@
 #'                        TCGA_GBM_miRNA_microarray)
 #' @export
 discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE, 
-                          subsampling = FALSE, subSize = dim(x)[1], iter = 100, 
+                          subsampling = FALSE, iter = 100, 
                           components = 3) {
   
     .checkDiscordantInputs(v1, v2, x, y, transform, subsampling, subSize, iter, 
@@ -124,42 +124,15 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE,
     }
     
     if (subsampling) {
-        subSize <- min(nrow(x), nrow(y))
+        subSize = .setSubSize(x, y)
         total_mu <- total_sigma <- total_nu <- 
           total_tau <- total_pi <- rep(0, components)
         
         for(i in 1:iter) {
-            # make sure pairs are independent
-            rowIndex <- sample(nrow(x), subSize)
-            
-            if(is.null(y)) {
-              # colIndex <- sample(nrow(x), subSize)
-              sampleNames <- rownames(x)
-              
-              if (floor(length(sampleNames) / 2) < subSize) {
-                warning("Provided subSize too high. Using number of features divided by 2.")
-                subSize <- floor(length(sampleNames) / 2)
-              }
-              
-              nameSet1 <- sample(sampleNames, subSize)
-              nameSet2 <- setdiff(sampleNames, nameSet1)
-              nameSetA <- paste0(nameSet1, "_", nameSet2)
-              nameSetB <- paste0(nameSet2, "_", nameSet1)
-              subSampV1 <- ifelse(is.na(v1[nameSetA]), v1[nameSetB], v1[nameSetA])
-              subSampV2 <- ifelse(is.na(v2[nameSetA]), v2[nameSetB], v2[nameSetA])
-            } else {
-              colIndex <- sample(nrow(y), subSize)
-              mat1 <- matrix(v1, nrow = nrow(x), byrow = FALSE)
-              mat2 <- matrix(v2, nrow = nrow(x), byrow = FALSE)
-              subSampV1 <- sapply(1:subSize, function(x) mat1[rowIndex[x], 
-                                                              colIndex[x]])
-              subSampV2 <- sapply(1:subSize, function(x) mat2[rowIndex[x], 
-                                                              colIndex[x]])
-            }
-            
-            sub.pdata <- cbind(subSampV1, subSampV2)
-            sub.class <- cbind(.assignClass(subSampV1, param1, components),
-                               .assignClass(subSampV2, param2, components))
+            subSamples <- .createSubsamples(x, y, v1, v2, subSize)
+            sub.pdata <- cbind(subSamples$v1, subSamples$v2)
+            sub.class <- cbind(.assignClass(subSamples$v1, param1, components),
+                               .assignClass(subSamples$v2, param2, components))
             
             pd <- em.normal.partial.concordant(sub.pdata, sub.class, components)
             total_mu <- total_mu + pd$mu_sigma[1,]
@@ -282,9 +255,29 @@ em.normal.partial.concordant <- function(data, class, components) {
   return(rtn)
 }
 
-# .createSubsamples <- function(x, y = NULL, v1, v2) {
-#   
-# }
+.createSubsamples <- function(x, y = NULL, v1, v2, subSize) {
+  if(is.null(y)) {
+    sampleNames <- rownames(x)
+    nameSet1 <- sample(sampleNames, subSize)
+    nameSet2 <- sample(setdiff(sampleNames, nameSet1))
+    nameSetA <- paste0(nameSet1, "_", nameSet2)
+    nameSetB <- paste0(nameSet2, "_", nameSet1)
+    subSampV1 <- ifelse(is.na(v1[nameSetA]), v1[nameSetB], v1[nameSetA])
+    subSampV2 <- ifelse(is.na(v2[nameSetA]), v2[nameSetB], v2[nameSetA])
+  } else {
+    # make sure pairs are independent
+    rowIndex <- sample(nrow(x), subSize)
+    colIndex <- sample(nrow(y), subSize)
+    mat1 <- matrix(v1, nrow = nrow(x), byrow = FALSE)
+    mat2 <- matrix(v2, nrow = nrow(x), byrow = FALSE)
+    subSampV1 <- sapply(1:subSize, function(x) mat1[rowIndex[x], 
+                                                    colIndex[x]])
+    subSampV2 <- sapply(1:subSize, function(x) mat2[rowIndex[x], 
+                                                    colIndex[x]])
+  }
+  return(list(v1 = subSampV1,
+              v2 = subSampV2))
+}
 
 # Internal function to validate user inputs for discordantRun()
 #' @importFrom methods is
@@ -302,12 +295,12 @@ em.normal.partial.concordant <- function(data, class, components) {
   # }
   
   if (!(components %in% c(3, 5))) {
-    stop ("components must be equal to 3 or 5")
+    stop ("Components must be equal to 3 or 5")
   }
   
   if (transform && (range(v1)[1] < -1 || range(v1)[2] > 1 || 
                     range(v2)[1] < -1 || range(v2)[2] > 1)) {
-    stop ("correlation vectors have values less than -1 and/or greater than 1.")
+    stop ("Correlation vectors have values less than -1 and/or greater than 1.")
   }
 }
 
@@ -320,6 +313,16 @@ em.normal.partial.concordant <- function(data, class, components) {
   if(any(c(sumZx, sumZy) == 0)) {
     stop("Insufficient data for component estimation. Increase number of 
          features or reduce number of components used. If subsampling=TRUE,
-         consider increasing subSize as well.")
+         you may need set subsampling=FALSE.")
+  }
+}
+
+# Internal function to set sub size based on data
+.setSubSize <- function(x, y) {
+  if (is.null(y)) {
+    sampleNames <- rownames(x)
+    subSize <- floor(length(sampleNames) / 2)
+  } else {
+    subSize <- min(nrow(x), nrow(y))
   }
 }
