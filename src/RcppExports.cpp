@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // em_normal_partial_concordant_cpp
 Rcpp::List em_normal_partial_concordant_cpp(Rcpp::NumericVector x, Rcpp::NumericVector y, Rcpp::NumericVector zxy, int n, Rcpp::NumericVector pi, Rcpp::NumericVector mu, Rcpp::NumericVector sigma, Rcpp::NumericVector nu, Rcpp::NumericVector tau, int g, double loglik, double tol, int restriction, Rcpp::NumericVector constrain, int iteration, int convergence);
 RcppExport SEXP _discordant_em_normal_partial_concordant_cpp(SEXP xSEXP, SEXP ySEXP, SEXP zxySEXP, SEXP nSEXP, SEXP piSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP tauSEXP, SEXP gSEXP, SEXP loglikSEXP, SEXP tolSEXP, SEXP restrictionSEXP, SEXP constrainSEXP, SEXP iterationSEXP, SEXP convergenceSEXP) {

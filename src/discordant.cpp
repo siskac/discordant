@@ -50,6 +50,11 @@ Rcpp::List em_normal_partial_concordant_cpp(Rcpp::NumericVector x,
                     mu[i] = mu[i] + zxy[(j*g+i)*n+k] * x[k];
                 }
             }
+            
+            if(pi[i] == 0) { stop("Divide-by-zero error. Increase number of features " 
+                                  "or reduce number of components. \n  If subsampling=TRUE, "
+                                  "you may need to set subsampling=FALSE.\n"
+                                  "  %s (Line %d)", __FILE__, __LINE__); }
             mu[i] = mu[i] / pi[i];
 
             sigma[i] = 0;
@@ -59,6 +64,11 @@ Rcpp::List em_normal_partial_concordant_cpp(Rcpp::NumericVector x,
                         (x[k]-mu[i]) * (x[k]-mu[i]);
                 }
             }
+            
+            if(pi[i] == 0) { stop("Divide-by-zero error. Increase number of features " 
+                                  "or reduce number of components. \n  If subsampling=TRUE, "
+                                  "you may need to set subsampling=FALSE.\n"
+                                  "  %s (Line %d)", __FILE__, __LINE__); }
             sigma[i] = sigma[i] / pi[i];
         }
 
@@ -76,6 +86,11 @@ Rcpp::List em_normal_partial_concordant_cpp(Rcpp::NumericVector x,
                     nu[j] = nu[j] + zxy[(j*g+i)*n+k] * y[k];
                 }
             }
+
+            if(pi[i] == 0) { stop("Divide-by-zero error. Increase number of features " 
+                                  "or reduce number of components. \n  If subsampling=TRUE, "
+                                  "you may need to set subsampling=FALSE.\n"
+                                  "  %s (Line %d)", __FILE__, __LINE__); }
             nu[j] = nu[j] / pi[j];
 
             tau[j] = 0;
@@ -85,6 +100,11 @@ Rcpp::List em_normal_partial_concordant_cpp(Rcpp::NumericVector x,
                         (y[k]-nu[j]) * (y[k]-nu[j]);
                 }
             }
+
+            if(pi[i] == 0) { stop("Divide-by-zero error. Increase number of features " 
+                                  "or reduce number of components. \n  If subsampling=TRUE, "
+                                  "you may need to set subsampling=FALSE.\n"
+                                  "  %s (Line %d)", __FILE__, __LINE__); }
             tau[j] = tau[j] / pi[j];
         }
 
@@ -105,6 +125,8 @@ Rcpp::List em_normal_partial_concordant_cpp(Rcpp::NumericVector x,
             temp = 0;
             for (i = 0; i < g; i++) {
                 for (j = 0; j < g; j++) {
+                    if(sigma[i] == 0 || tau[j] == 0) { stop("Divide-by-zero error (Line 116)."); }
+                    if(sigma[i] < 0 || tau[j] < 0) { stop("Non-real error (Line 117)."); }
                     temp = temp + pi[i*g+j] * 
                         (exp(0-0.5*(x[k]-mu[i])*(x[k]-mu[i])/sigma[i])/sqrt(2*PI*sigma[i])) * 
                         (exp(0-0.5*(y[k]-nu[j])*(y[k]-nu[j])/tau[j])/sqrt(2*PI*tau[j]));
@@ -122,6 +144,8 @@ Rcpp::List em_normal_partial_concordant_cpp(Rcpp::NumericVector x,
             temp = 0;
             for (i = 0; i < g; i++) {
                 for (j = 0; j < g; j++) {
+                    if(sigma[i] == 0 || tau[j] == 0) { stop("Divide-by-zero error (Line 134)."); }
+                    if(sigma[i] < 0 || tau[j] < 0) { stop("Non-real error (Line 135)."); }
                     temp = temp + pi[i*g+j] * 
                         (exp(0-0.5*(x[k]-mu[i])*(x[k]-mu[i])/sigma[i])/sqrt(2*PI*sigma[i])) *
                         (exp(0-0.5*(y[k]-nu[j])*(y[k]-nu[j])/tau[j])/sqrt(2*PI*tau[j]));
@@ -129,6 +153,8 @@ Rcpp::List em_normal_partial_concordant_cpp(Rcpp::NumericVector x,
             }
             for (i = 0; i < g;i++) {
                 for (j = 0; j < g; j++) {
+                    if(sigma[i] == 0 || tau[j] == 0) { stop("Divide-by-zero error (Line 144)."); }
+                    if(sigma[i] < 0 || tau[j] < 0) { stop("Non-real error (Line 145)."); }
                     zxy[(j*g+i)*n+k] = zxy[(j*g+i)*n+k] + pi[i*g+j] * 
                         (exp(0-0.5*(x[k]-mu[i])*(x[k]-mu[i])/sigma[i])/sqrt(2*PI*sigma[i])) *
                         (exp(0-0.5*(y[k]-nu[j])*(y[k]-nu[j])/tau[j])/sqrt(2*PI*tau[j])) / temp;
@@ -169,6 +195,8 @@ Rcpp::List subsampling_cpp(Rcpp::NumericVector x,
         temp = 0;
         for (i = 0; i < g; i++) {
             for (j = 0; j < g; j++) {
+                if(sigma[i] == 0 || tau[j] == 0) { stop("Divide-by-zero error (Line 186)."); }
+                if(sigma[i] < 0 || tau[j] < 0) { stop("Non-real error (Line 187)."); }
                 temp = temp + pi[i*g+j] * 
                     (exp(0-0.5*(x[k]-mu[i])*(x[k]-mu[i])/sigma[i])/sqrt(2*PI*sigma[i])) *
                     (exp(0-0.5*(y[k]-nu[j])*(y[k]-nu[j])/tau[j])/sqrt(2*PI*tau[j]));
@@ -176,6 +204,8 @@ Rcpp::List subsampling_cpp(Rcpp::NumericVector x,
         }
         for (i = 0; i < g; i++) {
             for (j = 0; j < g; j++) {
+                if(sigma[i] == 0 || tau[j] == 0) { stop("Divide-by-zero error (Line 195)."); }
+                if(sigma[i] < 0 || tau[j] < 0) { stop("Non-real error (Line 196)."); }
                 zxy[(j*g+i)*n+k] = zxy[(j*g+i)*n+k] + pi[i*g+j] * 
                     (exp(0-0.5*(x[k]-mu[i])*(x[k]-mu[i])/sigma[i])/sqrt(2*PI*sigma[i])) *
                     (exp(0-0.5*(y[k]-nu[j])*(y[k]-nu[j])/tau[j])/sqrt(2*PI*tau[j]) ) / temp;
