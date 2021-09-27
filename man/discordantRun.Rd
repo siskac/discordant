@@ -11,7 +11,6 @@ discordantRun(
   y = NULL,
   transform = TRUE,
   subsampling = FALSE,
-  subSize = dim(x)[1],
   iter = 100,
   components = 3
 )
@@ -29,12 +28,12 @@ discordantRun(
 
 \item{subsampling}{If TRUE subsampling will be run}
 
-\item{subSize}{Indicates how many feature pairs to be used for subsampling. 
-Default is the feature size in x}
-
 \item{iter}{Number of iterations for subsampling. Default is 100}
 
 \item{components}{Number of components in mixture model.}
+
+\item{subSize}{Indicates how many feature pairs to be used for subsampling. 
+Default is the feature size in x}
 }
 \value{
 \describe{
