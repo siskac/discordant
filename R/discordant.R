@@ -22,6 +22,8 @@
 #' @param y ExpressionSet of -omics data, induces dual -omics analysis
 #' @param transform If TRUE v1 and v2 will be Fisher transformed
 #' @param subsampling If TRUE subsampling will be run
+#' @param subSize Indicates how many feature pairs to be used for subsampling. 
+#' Default is the feature size in x
 #' @param iter Number of iterations for subsampling. Default is 100
 #' @param components Number of components in mixture model.
 #' 
@@ -94,7 +96,7 @@
 #'                        TCGA_GBM_miRNA_microarray)
 #' @export
 discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE, 
-                          subsampling = FALSE, iter = 100, 
+                          subsampling = FALSE, subSize = NULL, iter = 100, 
                           components = 3) {
   
     .checkDiscordantInputs(v1, v2, x, y, transform, subsampling, subSize, iter, 
@@ -113,23 +115,41 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE,
                    .assignClass(v2, param2, components))
     
     if (subsampling) {
-        subSize <- .setSubSize(x, y)
+        subSize <- .setSubSize(x, y, subSize)
         total_mu <- total_sigma <- total_nu <- 
           total_tau <- total_pi <- rep(0, components)
         
-        for(i in 1:iter) {
+        i <- 0
+        repeats <- 0
+        
+        while(i < iter && repeats < floor(iter * .1)) {
             subSamples <- .createSubsamples(x, y, v1, v2, subSize)
             sub.pdata <- cbind(subSamples$v1, subSamples$v2)
             sub.class <- cbind(.assignClass(subSamples$v1, param1, components),
                                .assignClass(subSamples$v2, param2, components))
             
-            pd <- em.normal.partial.concordant(sub.pdata, sub.class, components)
-            total_mu <- total_mu + pd$mu_sigma[1,]
-            total_sigma <- total_sigma + pd$mu_sigma[2,]
-            total_nu <- total_nu + pd$nu_tau[1,]
-            total_tau <- total_tau + pd$nu_tau[2,]
-            total_pi <- total_pi + pd$pi
-      }
+            pd <- tryCatch({em.normal.partial.concordant(sub.pdata, sub.class, 
+                                                   components)},
+                error = function(unused) return(NULL))
+            
+            if(is.null(pd)) { 
+              repeats <- repeats + 1 
+            } else {
+              i <- i + 1
+              total_mu <- total_mu + pd$mu_sigma[1,]
+              total_sigma <- total_sigma + pd$mu_sigma[2,]
+              total_nu <- total_nu + pd$nu_tau[1,]
+              total_tau <- total_tau + pd$nu_tau[2,]
+              total_pi <- total_pi + pd$pi
+            }
+        }
+        
+        if (repeats >= floor(iter * .1)) {
+          stop("Insufficient data for subsampling. Increase number of
+               features, reduce number of components used, or increase 
+               subSize if not at default value. Alternatively, set
+               subsampling=FALSE.")
+        }
       
       mu <- total_mu / iter
       sigma <- total_sigma / iter
@@ -311,11 +331,23 @@ em.normal.partial.concordant <- function(data, class, components) {
 }
 
 # Internal function to set sub size based on data
-.setSubSize <- function(x, y) {
+.setSubSize <- function(x, y, subSize) {
   if (is.null(y)) {
-    sampleNames <- rownames(x)
-    subSize <- floor(length(sampleNames) / 2)
+    if (is.null(subSize)) {
+      subSize <- floor(length(rownames(x)) / 2)
+    } else if (subSize > floor(length(rownames(x)) / 2)) {
+      subSize <- floor(length(rownames(x)) / 2)
+      warning(paste0("subSize argument too large. Using subSize ", subSize,
+                     " See vignette for more information."))
+    }
   } else {
-    subSize <- min(nrow(x), nrow(y))
+    if (is.null(subSize)) {
+      subSize <- min(nrow(x), nrow(y))
+    } else if (subSize > min(nrow(x), nrow(y))) {
+      subSize <- min(nrow(x), nrow(y))
+      warning(paste0("subSize argument to large. Using subSize ", subSize,
+                     " See vignette for more information."))
+    }
   }
+  return(subSize)
 }

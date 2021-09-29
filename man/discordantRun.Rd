@@ -11,6 +11,7 @@ discordantRun(
   y = NULL,
   transform = TRUE,
   subsampling = FALSE,
+  subSize = NULL,
   iter = 100,
   components = 3
 )
@@ -27,6 +28,9 @@ discordantRun(
 \item{transform}{If TRUE v1 and v2 will be Fisher transformed}
 
 \item{subsampling}{If TRUE subsampling will be run}
+
+\item{subSize}{Indicates how many feature pairs to be used for subsampling. 
+Default is the feature size in x}
 
 \item{iter}{Number of iterations for subsampling. Default is 100}
 
