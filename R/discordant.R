@@ -22,8 +22,6 @@
 #' @param y ExpressionSet of -omics data, induces dual -omics analysis
 #' @param transform If TRUE v1 and v2 will be Fisher transformed
 #' @param subsampling If TRUE subsampling will be run
-#' @param subSize Indicates how many feature pairs to be used for subsampling. 
-#' Default is the feature size in x
 #' @param iter Number of iterations for subsampling. Default is 100
 #' @param components Number of components in mixture model.
 #' 
