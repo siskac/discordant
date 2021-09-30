@@ -405,21 +405,40 @@ the average of these parameters are used to maximize posterior probabilities for
 all feature pairs. This option was introduced to speed up Discordant method and 
 to also address the independence assumption. 
 
-__There are some implementation 
-issues which are explained in Siska et al (@siska2).__ *Need to explain this
-more*
+The argument `subsampling` must be set to `TRUE` for subsampling to be used. By
+default, the number of independent feature pairs to be subsampled is half the
+total number of features divided by two for within -omics analysis and the 
+number of features in the data set with fewer features for between -omics 
+analysis. This number may be altered by users using the `subSize` argument, but
+the value set by users cannot exceed the default value, as the default value
+is the maximum number of independent sample pairs possible for a given analysis.
 
-The argument `subsampling` must be set to `TRUE` for subsampling to be used. The
-number of independent feature pairs to be subsampled is determined by the 
-argument `subSize` whose default value is the number of rows in `x`. The number 
-of independent feature pairs must be less or equal to the number of features in 
-`x` and `y`. The number of random samplings to be run is set by the argument 
+The number of random samplings to be run is set by the argument 
 `iter` which has a default value of 100.
 
-For the subsampling example, we will use the sequencing data. The sequencing 
-data has a greater feature size than the microarray data. A dataset with small 
-feature size will cause a segmentation fault with subsampling because not enough
-feature pairs are being used to estimate parameters in the mixture model.
+As discussed in the next section, the discordant method requires a sufficient
+number of features to estimate components, and using subsampling reduces the
+quantity of features used for analysis, so subsampling should be reserved for 
+larger data sets. For some data sets, certain random samples will be sufficient,
+while others may not be. For those data sets, the subsampling algorithm will
+allow up to 10% of iterations to fail and be repeated. If more than 10% of
+iterations fail, `discordantRun()` will throw an error with potential solutions,
+as shown below.
+
+```{r, error = TRUE}
+# Between -omics
+btwn_result <- discordantRun(v1 = btwn_vectors$v1, 
+                             v2 = btwn_vectors$v2, 
+                             x = TCGA_GBM_miRNA_microarray, 
+                             y = TCGA_GBM_transcript_microarray,
+                             components = 3,
+                             subsampling = TRUE)
+```
+
+
+Given the small quantity of features in the 
+example data sets provided by `r Biocpkg("discordant")`, we cannot provide
+an example of successfull subsampling here.
 
 ## Five Components
 
