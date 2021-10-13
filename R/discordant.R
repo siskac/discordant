@@ -145,10 +145,10 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE,
         }
         
         if (repeats >= floor(iter * .1)) {
-          stop("Insufficient data for subsampling. Increase number of
-               features, reduce number of components used, or increase 
-               subSize if not at default value. Alternatively, set
-               subsampling=FALSE.")
+          stop(paste0("\nInsufficient data for subsampling. Increase number of",
+               "\nfeatures, reduce numberof components used, or increase", 
+               "\nsubSize if not at default value. Alternatively, set",
+               "\nsubsampling=FALSE."))
         }
       
       mu <- total_mu / iter
@@ -162,7 +162,13 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE,
       zTable <- finalResult$z
       classVector <- finalResult$class
     } else {
-        pd <- em.normal.partial.concordant(pdata, class, components)
+        pd <- tryCatch({em.normal.partial.concordant(pdata, class, components)},
+                       error = function(unused) return(NULL))
+        if (is.null(pd)) {
+          stop(
+            paste0("\nInsufficient data for component estimation. Increase",
+                   "\nnumber of features or reduce number of components used."))
+        }
         zTable <- pd$z
         classVector <- pd$class
     }
@@ -184,7 +190,7 @@ em.normal.partial.concordant <- function(data, class, components) {
 
     zx <- .unmap(class[,1], components = components)
     zy <- .unmap(class[,2], components = components)
-    .checkForMissingComponents(zx, zy)
+    # .checkForMissingComponents(zx, zy)
     zxy <- sapply(1:dim(zx)[1], yl.outer, zx, zy)
 
     pi <- double(g*g)
@@ -320,15 +326,15 @@ em.normal.partial.concordant <- function(data, class, components) {
 # Internal function that checks whether all types of component are present
 #   in given vectors. If a certain component is not present, we run into a
 #   divide-by-zero error that crashes R
-.checkForMissingComponents <- function(zx, zy) {
-  sumZx <- colSums(zx)
-  sumZy <- colSums(zy)
-  if(any(c(sumZx, sumZy) == 0)) {
-    stop("Insufficient data for component estimation. Increase number of 
-         features or reduce number of components used. If subsampling=TRUE,
-         you may need set subsampling=FALSE.")
-  }
-}
+# .checkForMissingComponents <- function(zx, zy) {
+#   sumZx <- colSums(zx)
+#   sumZy <- colSums(zy)
+#   if(any(c(sumZx, sumZy) == 0)) {
+#     stop("Insufficient data for component estimation. Increase number of 
+#          features or reduce number of components used. If subsampling=TRUE,
+#          you may need set subsampling=FALSE.")
+#   }
+# }
 
 # Internal function to set sub size based on data
 .setSubSize <- function(x, y, subSize) {

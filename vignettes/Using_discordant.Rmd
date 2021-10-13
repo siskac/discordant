@@ -489,7 +489,7 @@ sub_result <- discordantRun(sub_vectors$v1, sub_vectors$v2,
                             y = TCGA_Breast_RNASeq,
                             components = 3, subsampling = TRUE)
 
-
+# Results
 round(head(sub_result$probMatrix), 2)
 ```
 
