@@ -145,10 +145,10 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE,
         }
         
         if (repeats >= floor(iter * .1)) {
-          stop(paste0("\nInsufficient data for subsampling. Increase number of",
+          stop("\nInsufficient data for subsampling. Increase number of",
                "\nfeatures, reduce numberof components used, or increase", 
                "\nsubSize if not at default value. Alternatively, set",
-               "\nsubsampling=FALSE."))
+               "\nsubsampling=FALSE.")
         }
       
       mu <- total_mu / iter
@@ -165,9 +165,8 @@ discordantRun <- function(v1, v2, x, y = NULL, transform = TRUE,
         pd <- tryCatch({em.normal.partial.concordant(pdata, class, components)},
                        error = function(unused) return(NULL))
         if (is.null(pd)) {
-          stop(
-            paste0("\nInsufficient data for component estimation. Increase",
-                   "\nnumber of features or reduce number of components used."))
+          stop("\nInsufficient data for component estimation. Increase",
+               "\nnumber of features or reduce number of components used.")
         }
         zTable <- pd$z
         classVector <- pd$class
@@ -343,16 +342,16 @@ em.normal.partial.concordant <- function(data, class, components) {
       subSize <- floor(length(rownames(x)) / 2)
     } else if (subSize > floor(length(rownames(x)) / 2)) {
       subSize <- floor(length(rownames(x)) / 2)
-      warning(paste0("subSize argument too large. Using subSize ", subSize,
-                     " See vignette for more information."))
+      warning("subSize argument too large. Using subSize ", subSize,
+              " See vignette for more information.")
     }
   } else {
     if (is.null(subSize)) {
       subSize <- min(nrow(x), nrow(y))
     } else if (subSize > min(nrow(x), nrow(y))) {
       subSize <- min(nrow(x), nrow(y))
-      warning(paste0("subSize argument to large. Using subSize ", subSize,
-                     " See vignette for more information."))
+      warning("subSize argument to large. Using subSize ", subSize,
+              " See vignette for more information.")
     }
   }
   return(subSize)

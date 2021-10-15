@@ -471,22 +471,22 @@ involved in drawing subsamples, and results may differ using different seeds.
 
 ```{r}
 # Load Data
-data(TCGA_Breast_miRNASeq)
-data(TCGA_Breast_RNASeq)
+data(TCGA_Breast_miRNASeq_voom)
+data(TCGA_Breast_RNASeq_voom)
 
 # Prepare groups
 groups <- c(rep(1, 15), rep(2, 42))
 
 # Create correlation vectors
-sub_vectors <- createVectors(x = TCGA_Breast_miRNASeq, 
-                             y = TCGA_Breast_RNASeq,
+sub_vectors <- createVectors(x = TCGA_Breast_miRNASeq_voom, 
+                             y = TCGA_Breast_RNASeq_voom,
                              groups = groups)
 
 # Run analysis with subsampling
 set.seed(126)
 sub_result <- discordantRun(sub_vectors$v1, sub_vectors$v2,
-                            x = TCGA_Breast_miRNASeq,
-                            y = TCGA_Breast_RNASeq,
+                            x = TCGA_Breast_miRNASeq_voom,
+                            y = TCGA_Breast_RNASeq_voom,
                             components = 3, subsampling = TRUE)
 
 # Results
