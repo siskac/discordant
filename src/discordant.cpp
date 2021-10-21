@@ -33,7 +33,7 @@ Rcpp::List em_normal_partial_concordant_cpp(Rcpp::NumericVector x,
     
     /*iteration*/
     iter = 0;
-    while (flag > 0 & iter < iteration) {
+    while ((flag > 0) & (iter < iteration)) {
 
         /*M step for pi, mu and sigma*/
         for (i = 0; i < g; i++) {
