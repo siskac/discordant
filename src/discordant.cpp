@@ -1,7 +1,9 @@
 #include <Rcpp.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <iostream>
 using namespace Rcpp;
+
 
 // [[Rcpp::export]]
 Rcpp::List em_normal_partial_concordant_cpp(Rcpp::NumericVector x,
@@ -27,8 +29,8 @@ Rcpp::List em_normal_partial_concordant_cpp(Rcpp::NumericVector x,
     flag = 1;
     loglik = 0;
     for (k = 0; k < n; k++) {
-        loglik = loglik - 0.5*x[k]*x[k] - 0.5*log(2*PI) - 
-            0.5*y[k]*y[k] - 0.5*log(2*PI);
+        loglik = loglik - 0.5*x[k]*x[k] - 0.5*log(2*M_PI) - 
+            0.5*y[k]*y[k] - 0.5*log(2*M_PI);
     }
     
     /*iteration*/
@@ -141,8 +143,8 @@ Rcpp::List em_normal_partial_concordant_cpp(Rcpp::NumericVector x,
                              "you may need to set subsampling=FALSE.\n"
                              "  %s (Line %d)", __FILE__, __LINE__); }
                     temp = temp + pi[i*g+j] * 
-                        (exp(0-0.5*(x[k]-mu[i])*(x[k]-mu[i])/sigma[i])/sqrt(2*PI*sigma[i])) * 
-                        (exp(0-0.5*(y[k]-nu[j])*(y[k]-nu[j])/tau[j])/sqrt(2*PI*tau[j]));
+                        (exp(0-0.5*(x[k]-mu[i])*(x[k]-mu[i])/sigma[i])/sqrt(2*M_PI*sigma[i])) * 
+                        (exp(0-0.5*(y[k]-nu[j])*(y[k]-nu[j])/tau[j])/sqrt(2*M_PI*tau[j]));
                 }
             }
             loglik = loglik + log(temp);
@@ -168,8 +170,8 @@ Rcpp::List em_normal_partial_concordant_cpp(Rcpp::NumericVector x,
                              "you may need to set subsampling=FALSE.\n"
                              "  %s (Line %d)", __FILE__, __LINE__); }
                     temp = temp + pi[i*g+j] * 
-                        (exp(0-0.5*(x[k]-mu[i])*(x[k]-mu[i])/sigma[i])/sqrt(2*PI*sigma[i])) *
-                        (exp(0-0.5*(y[k]-nu[j])*(y[k]-nu[j])/tau[j])/sqrt(2*PI*tau[j]));
+                        (exp(0-0.5*(x[k]-mu[i])*(x[k]-mu[i])/sigma[i])/sqrt(2*M_PI*sigma[i])) *
+                        (exp(0-0.5*(y[k]-nu[j])*(y[k]-nu[j])/tau[j])/sqrt(2*M_PI*tau[j]));
                 }
             }
             for (i = 0; i < g;i++) {
@@ -185,8 +187,8 @@ Rcpp::List em_normal_partial_concordant_cpp(Rcpp::NumericVector x,
                              "you may need to set subsampling=FALSE.\n"
                              "  %s (Line %d)", __FILE__, __LINE__); }
                     zxy[(j*g+i)*n+k] = zxy[(j*g+i)*n+k] + pi[i*g+j] * 
-                        (exp(0-0.5*(x[k]-mu[i])*(x[k]-mu[i])/sigma[i])/sqrt(2*PI*sigma[i])) *
-                        (exp(0-0.5*(y[k]-nu[j])*(y[k]-nu[j])/tau[j])/sqrt(2*PI*tau[j])) / temp;
+                        (exp(0-0.5*(x[k]-mu[i])*(x[k]-mu[i])/sigma[i])/sqrt(2*M_PI*sigma[i])) *
+                        (exp(0-0.5*(y[k]-nu[j])*(y[k]-nu[j])/tau[j])/sqrt(2*M_PI*tau[j])) / temp;
                 }
             }
         }
@@ -227,8 +229,8 @@ Rcpp::List subsampling_cpp(Rcpp::NumericVector x,
                 if(sigma[i] == 0 || tau[j] == 0) { stop("Divide-by-zero error (Line 186)."); }
                 if(sigma[i] < 0 || tau[j] < 0) { stop("Non-real error (Line 187)."); }
                 temp = temp + pi[i*g+j] * 
-                    (exp(0-0.5*(x[k]-mu[i])*(x[k]-mu[i])/sigma[i])/sqrt(2*PI*sigma[i])) *
-                    (exp(0-0.5*(y[k]-nu[j])*(y[k]-nu[j])/tau[j])/sqrt(2*PI*tau[j]));
+                    (exp(0-0.5*(x[k]-mu[i])*(x[k]-mu[i])/sigma[i])/sqrt(2*M_PI*sigma[i])) *
+                    (exp(0-0.5*(y[k]-nu[j])*(y[k]-nu[j])/tau[j])/sqrt(2*M_PI*tau[j]));
             }
         }
         for (i = 0; i < g; i++) {
@@ -236,8 +238,8 @@ Rcpp::List subsampling_cpp(Rcpp::NumericVector x,
                 if(sigma[i] == 0 || tau[j] == 0) { stop("Divide-by-zero error (Line 195)."); }
                 if(sigma[i] < 0 || tau[j] < 0) { stop("Non-real error (Line 196)."); }
                 zxy[(j*g+i)*n+k] = zxy[(j*g+i)*n+k] + pi[i*g+j] * 
-                    (exp(0-0.5*(x[k]-mu[i])*(x[k]-mu[i])/sigma[i])/sqrt(2*PI*sigma[i])) *
-                    (exp(0-0.5*(y[k]-nu[j])*(y[k]-nu[j])/tau[j])/sqrt(2*PI*tau[j]) ) / temp;
+                    (exp(0-0.5*(x[k]-mu[i])*(x[k]-mu[i])/sigma[i])/sqrt(2*M_PI*sigma[i])) *
+                    (exp(0-0.5*(y[k]-nu[j])*(y[k]-nu[j])/tau[j])/sqrt(2*M_PI*tau[j]) ) / temp;
             }
         }
     }
