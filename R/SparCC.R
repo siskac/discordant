@@ -1,22 +1,21 @@
-################################################################################
 # File: SparCC.R
 # Aim : SparCC 
-# ------------------------------------------------------------------------------
+#
 # Author: Fang Huaying (Peking University)
 # Email : hyfang@pku.edu.cn
 # Date  : 11/12/2014
-# ------------------------------------------------------------------------------
+#
 # SparCC for counts known
 #   function: SparCC.count
 #   input:
-#     x ------ nxp count data matrix, row is sample, col is variable
-#     imax ------ resampling times from posterior distribution. default 20
-#     kmax ------ max iteration steps for SparCC. default is 10
-#     alpha ------ the threshold for strong correlation. default is 0.1
-#     Vmin ------ minimal variance if negative variance appears. default is 1e-4
+#     x - nxp count data matrix, row is sample, col is variable
+#     imax - resampling times from posterior distribution. default 20
+#     kmax - max iteration steps for SparCC. default is 10
+#     alpha - the threshold for strong correlation. default is 0.1
+#     Vmin - minimal variance if negative variance appears. default is 1e-4
 #   output: a list structure
-#     cov.w ------ covariance estimation
-#     cor.w ------ correlation estimation
+#     cov.w - covariance estimation
+#     cor.w - correlation estimation
 
 SparCC.count <- function(x, imax = 20, kmax = 10, alpha = 0.1, Vmin = 1e-4) {
     # dimension for w (latent variables)
@@ -52,17 +51,16 @@ SparCC.count <- function(x, imax = 20, kmax = 10, alpha = 0.1, Vmin = 1e-4) {
     return(list(cov.w = cov.w, cor.w = cor.w));
 }
 
-#-------------------------------------------------------------------------------
 # SparCC for fractions known
 #   function: SparCC.frac
 #   input:
-#          x ------ nxp fraction data matrix, row is sample, col is variable
-#       kmax ------ max iteration steps for SparCC. default is 10
-#      alpha ------ the threshold for strong correlation. default is 0.1
-#       Vmin ------ minimal variance if negative variance appears. default is 1e-4
+#          x - nxp fraction data matrix, row is sample, col is variable
+#       kmax - max iteration steps for SparCC. default is 10
+#      alpha - the threshold for strong correlation. default is 0.1
+#       Vmin - minimal variance if negative variance appears. default is 1e-4
 #   output: a list structure
-#      cov.w ------ covariance estimation
-#      cor.w ------ correlation estimation
+#      cov.w - covariance estimation
+#      cor.w - correlation estimation
 SparCC.frac <- function(x, kmax = 10, alpha = 0.1, Vmin = 1e-4) {
     # Log transformation
     x <- log(x);
