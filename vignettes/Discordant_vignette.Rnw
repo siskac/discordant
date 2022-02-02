@@ -102,11 +102,7 @@ All datasets are originally from the Cancer Genome Atlas (TCGA) and can be found
 
 \begin{description}
 \item{\Robject{x}}{ m by n matrix where m are features and n are samples. If only this matrix is provided, a within -omics analysis is performed.}
-<<<<<<< HEAD
 \item{\Robject{y}}{ m by n matrix where m are features and n are samples. This is an optional argument which will induce between -omics analysis. Samples must be matched with those in x.} 
-=======
-\item{\Robject{y}}{ m by n matrix where m are features and n are samples. This is an optional argument which will induce between -omics analysis. Samples must be matched with those in x.}
->>>>>>> release-0.99.6
 \item{\Robject{group}}{ vector containing 1s and 2s that correspond to the location of samples in the columns of x (and y if provided). For example, the control group is group 1 and the experimental group 2, and the location of samples corresponding to the two groups matches the locations of 1s and 2s in the group vector}
 \end{description}
 
