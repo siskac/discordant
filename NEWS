@@ -1,0 +1,10 @@
+# Changes in version 0.99.0 (2016-10-23)
+- Submitted to Bioconductor
+
+# Changes in version 1.17.1 (2021-10-14)
+- Changes C backend to C++
+- Adds within -omics subsampling
+- Improves vignette
+- Fixes several bugs
+    - Labels for createVectors() now correct
+    - C (now C++) backend no longer crashes R when things go wrong

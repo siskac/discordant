@@ -1,18 +1,31 @@
 Package: discordant
-Version: 0.99.8
-Date: 2016-10-21
-Title: The Discordant Method: A Novel Approach for Differential Correlation
-Authors@R: c(person("Charlotte", "Siska", role = c("aut", "cre"), email = "charlotte.siska@ucdenver.edu"), person("Katerina", "Kechris", role = c("aut")))
-Author: Charlotte Siska [cre,aut], Katerina Kechris [aut]
-Depends: R (>= 3.4)
-Maintainer: Charlotte Siska <siska.charlotte@gmail.com>
-Description: Discordant is a method to determine differential correlation of molecular feature pairs from -omics data using mixture models. Algorithm is explained further in Siska et al.
-Encoding: latin1
-biocViews: BiologicalQuestion, StatisticalMethod, mRNAMicroarray, Microarray, Genetics, RNASeq
-Suggests: BiocStyle, knitr
-Imports: Biobase, stats, biwt, gtools, MASS, tools
-License: GPL (>= 2)
+Version: 1.19.2
+Title: The Discordant Method: A Novel Approach for Differential
+        Correlation
+Authors@R: c(person("Charlotte", "Siska", role = c("aut"),
+                    email = "charlotte.siska@ucdenver.edu"),
+             person("McGrath", "Max", role = c("aut", "cre"),
+                    email = "max.mcgrath@ucdenver.edu"), 
+             person("Katerina", "Kechris", role = c("aut", "cph", "ths")))
+Depends: R (>= 4.1.0)
+Description: Discordant is an R package that identifies pairs of features that 
+    correlate differently between phenotypic groups, with application to -omics 
+    data sets. Discordant uses a mixture model that “bins” molecular feature 
+    pairs based on their type of coexpression or coabbundance. Algorithm is 
+    explained further in "Differential Correlation for Sequencing Data"" (Siska 
+    et al. 2016).
+Encoding: UTF-8
+biocViews: ImmunoOncology, BiologicalQuestion, StatisticalMethod, 
+    mRNAMicroarray, Microarray, Genetics, RNASeq
+Suggests: 
+    BiocStyle,
+    knitr,
+    testthat (>= 3.0.0)
+Imports: Rcpp, Biobase, stats, biwt, gtools, MASS, tools, dplyr, methods, utils
+License: GPL-3
 URL: https://github.com/siskac/discordant
 NeedsCompilation: yes
+LinkingTo: Rcpp
 VignetteBuilder: knitr
-Packaged: 2016-10-23 17:49:47 UTC; siskac
+RoxygenNote: 7.1.2
+Config/testthat/edition: 3
